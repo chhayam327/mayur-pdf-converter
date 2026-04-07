@@ -1,184 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="xiRJHwXYOAgv48UNnXXzGj0fYidb9RCfv9oQZtDnozk" />
-    <title>Mayur PDF Ultra - 10+ Universal Tools (Any Language)</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.0/build/index.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     
+    <meta name="google-site-verification" content="YAHAN_APNA_CODE_DAALEIN" />
+
+    <title>I LOVE PDF TOOLKIT - 100% Free PDF Tools by Mayur Team</title>
+    <meta name="description" content="Free PDF to Word, Merge, Split, and Compress tools. No Premium, No Limits. Created by Mayur Team.">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
-        :root { --primary: #00f2ff; --premium: #ffae00; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        :root { --primary-red: #e53935; --word-blue: #2b579a; --excel-green: #217346; --ppt-orange: #d24726; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #333; }
         
-        /* ilovePDF-style Grid on Entry Page */
-        .dashboard-container { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 30px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; max-width: 900px; }
-        .tool-btn { background: var(--card); border: none; padding: 25px; border-radius: 15px; color: var(--text); font-weight: bold; cursor: pointer; transition: 0.3s; position: relative; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid transparent; }
-        .tool-btn:hover { border-color: var(--primary); transform: translateY(-3px); background: #222a3e; }
-        .premium-btn { border-color: var(--premium); background: rgba(255,174,0,0.1); }
-        .premium-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: var(--premium); font-weight: bold; }
+        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; cursor: pointer; }
+        .logo span { color: var(--primary-red); margin: 0 4px; }
 
-        /* Feature View (Large Screen) */
-        .feature-screen { display: none; width: 95%; max-width: 1000px; background: var(--card); border-radius: 20px; padding: 30px; margin: 30px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .feature-header { display: flex; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-        .feature-header h2 { margin-left: 10px; color: var(--primary); }
-        .feature-body { padding-top: 20px; text-align: left; }
-        .close-btn { background: #ff4d4d; border: none; color: white; border-radius: 5px; cursor: pointer; padding: 5px 10px; margin-right: 15px; }
+        .ad-top { background: white; border: 1px solid #eee; margin: 10px auto; width: 95%; max-width: 728px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; border-radius: 5px; }
 
-        /* Ad Modal with Countdown */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: white; color: black; padding: 20px; border-radius: 15px; text-align: center; max-width: 320px; }
-        .countdown { font-size: 24px; font-weight: bold; color: #ff4d4d; margin-top: 10px; }
-        .ad-space { background: #eee; width: 300px; height: 250px; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; margin-bottom: 15px; font-size: 10px; color: #999; }
+        .container { padding: 20px; max-width: 1200px; margin: auto; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        
+        .card { background: white; padding: 20px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; cursor: pointer; text-align: left; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary-red); }
+        .card i { font-size: 28px; margin-bottom: 15px; }
+        .card h3 { margin: 0 0 8px 0; font-size: 17px; }
+        .card p { margin: 0; font-size: 12px; color: #777; }
+
+        /* Tool Section */
+        #tool-view { display: none; padding-top: 30px; }
+        .btn-red { background: var(--primary-red); color: white; padding: 15px 45px; font-size: 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 20px 0; width: 100%; max-width: 300px; box-shadow: 0 4px 10px rgba(229,57,53,0.3); }
+        
+        .processing-box { display: none; background: white; padding: 30px; border-radius: 15px; border: 1px solid #ddd; display: inline-block; width: 100%; max-width: 400px; }
+        .ad-square { background: #fafafa; width: 300px; height: 250px; margin: 20px auto; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 11px; }
+        
+        /* Share Section */
+        #share-options { display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .share-btn { padding: 10px 15px; border-radius: 5px; color: white; text-decoration: none; margin: 5px; display: inline-block; font-size: 14px; }
+        .wa { background: #25D366; } .tg { background: #0088cc; } .dl { background: #333; }
+
+        footer { background: white; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .ad-top { height: 50px; } }
     </style>
 </head>
 <body>
 
-    <div id="dashboard" class="dashboard-container">
-        <h1>Mayur PDF Universal 🌐</h1>
-        <p style="opacity: 0.6; margin-bottom: 25px;">Unlimited Tools • No Server • Multi-Language Support</p>
-        
-        <div class="grid">
-            <button class="tool-btn" style="color:#00f2ff;" onclick="showFeature('word')">📄 PDF to Word</button>
-            <button class="tool-btn" style="color:#ff00ea;" onclick="showFeature('jpg')">🖼️ PDF to JPG</button>
-            <button class="tool-btn" style="color:#ffee00;" onclick="showFeature('watermark')">💧 Add Watermark</button>
-            <button class="tool-btn" style="color:#00ff8c;" onclick="showFeature('rotate')">🔄 Rotate PDF</button>
-            <button class="tool-btn" style="color:#ff7b00;" onclick="showFeature('removepages')">✂️ Remove Pages</button>
+<header>
+    <div onclick="location.reload()"><i class="fas fa-bars"></i></div>
+    <div class="logo" onclick="location.reload()">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</div>
+    <div><i class="fas fa-th"></i></div>
+</header>
+
+<div class="ad-top">ADVERTISEMENT SECTION (BANNER)</div>
+
+<div class="container" id="home-view">
+    <h1>All the PDF tools you need, 100% Free</h1>
+    <p>No Premium. No Limits. Secure conversion by Mayur Team.</p>
+    
+    <div class="grid">
+        <div class="card" onclick="openTool('PDF to WORD', 'fa-file-word', 'var(--word-blue)')">
+            <i class="fas fa-file-word" style="color: var(--word-blue);"></i>
+            <h3>PDF to WORD</h3>
+            <p>Convert PDF to editable Word docs with 100% accuracy.</p>
+        </div>
+        <div class="card" onclick="openTool('Merge PDF', 'fa-layer-group', 'var(--primary-red)')">
+            <i class="fas fa-layer-group" style="color: var(--primary-red);"></i>
+            <h3>Merge PDF</h3>
+            <p>Combine multiple PDFs into one easy file.</p>
+        </div>
+        <div class="card" onclick="openTool('Compress PDF', 'fa-compress-arrows-alt', '#43a047')">
+            <i class="fas fa-compress-arrows-alt" style="color: #43a047;"></i>
+            <h3>Compress PDF</h3>
+            <p>Reduce file size without losing quality.</p>
+        </div>
+        <div class="card" onclick="openTool('PDF to JPG', 'fa-file-image', '#ff9800')">
+            <i class="fas fa-file-image" style="color: #ff9800;"></i>
+            <h3>PDF to JPG</h3>
+            <p>Extract images or save pages as JPG.</p>
+        </div>
+        <div class="card" onclick="openTool('Excel to PDF', 'fa-file-excel', 'var(--excel-green)')">
+            <i class="fas fa-file-excel" style="color: var(--excel-green);"></i>
+            <h3>Excel to PDF</h3>
+            <p>Convert Excel spreadsheets to PDF.</p>
+        </div>
+        <div class="card" onclick="openTool('Unlock PDF', 'fa-unlock', '#333')">
+            <i class="fas fa-unlock" style="color: #333;"></i>
+            <h3>Unlock PDF</h3>
+            <p>Remove passwords and security from PDFs.</p>
+        </div>
+        <div class="card" onclick="openTool('Protect PDF', 'fa-lock', '#555')">
+            <i class="fas fa-lock" style="color: #555;"></i>
+            <h3>Protect PDF</h3>
+            <p>Add a password to your sensitive PDF files.</p>
+        </div>
+        <div class="card" onclick="openTool('Watermark', 'fa-stamp', '#795548')">
+            <i class="fas fa-stamp" style="color: #795548;"></i>
+            <h3>Watermark</h3>
+            <p>Add text or image watermark to your PDF.</p>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="tool-view">
+    <h2 id="tool-title">PDF to WORD</h2>
+    <p id="tool-desc">Upload your file to start the conversion process.</p>
+
+    <div id="upload-step">
+        <button class="btn-red" onclick="document.getElementById('fin').click()">Select PDF file</button>
+        <input type="file" id="fin" hidden onchange="startProcess()">
+    </div>
+
+    <div id="process-step" style="display:none;">
+        <div class="processing-box">
+            <i id="p-icon" class="fas fa-file-pdf" style="font-size: 50px; color: var(--primary-red);"></i>
+            <p id="fname" style="font-weight: bold; margin: 15px 0;"></p>
             
-            <button class="tool-btn premium-btn" style="color:#ffae00;" onclick="checkPremium('png')">
-                <span class="premium-tag">PRO</span>🖼️ PDF to PNG (HQ)
-            </button>
-            <button class="tool-btn premium-btn" style="color:#ffae00;" onclick="checkPremium('organize')">
-                <span class="premium-tag">PRO</span>📂 Organize Pages
-            </button>
-            <button class="tool-btn premium-btn" style="color:#ffae00;" onclick="checkPremium('html')">
-                <span class="premium-tag">PRO</span>🔗 PDF to HTML
-            </button>
+            <div class="ad-square">ADVERTISEMENT (SQUARE)</div>
+            
+            <div id="timer-box">
+                <p style="font-size: 18px; color: var(--primary-red); font-weight: bold;">
+                    Converting... <span id="timer">8</span>s
+                </p>
+            </div>
+
+            <div id="share-options">
+                <h3 style="color: #43a047;"><i class="fas fa-check-circle"></i> Conversion Complete!</h3>
+                <button class="share-btn dl" onclick="alert('Downloading...')"><i class="fas fa-download"></i> Download</button>
+                <p style="margin-top: 15px; font-size: 13px; font-weight: bold;">Share File With:</p>
+                <a href="#" id="wa-share" class="share-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" id="tg-share" class="share-btn tg"><i class="fab fa-telegram"></i> Telegram</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <div id="featureScreen" class="feature-screen">
-        <div class="feature-header">
-            <button class="close-btn" onclick="closeFeature()">Back</button>
-            <h2 id="featureTitle">Feature Title</h2>
-        </div>
-        <div class="feature-body">
-            <input type="file" id="fileInput" accept="application/pdf" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:10px; width:100%;">
-            <button id="convertBtn" style="background:#00f2ff; color:#000; border:none; padding:15px; border-radius:10px; width:100%; margin-top:15px; font-weight:bold; cursor:pointer; font-size:16px;">Convert</button>
-            <div id="featureStatus" style="margin-top:15px; padding:10px; border-radius:5px; background:rgba(255,255,255,0.05);">Status: Ready 🚀</div>
-        </div>
-    </div>
+<footer>
+    &copy; 2026 I LOVE PDF TOOLKIT - Managed by Mayur Team. All Rights Reserved.
+</footer>
 
-    <div id="adModal" class="modal">
-        <div class="modal-content">
-            <div class="ad-space">Google AdSense - Square Ad</div>
-            <p>Aapki file ready ho rahi hai...</p>
-            <div id="countdown" class="countdown">8</div>
-        </div>
-    </div>
+<script>
+    let currentTool = "";
 
-    <script>
-        let currentFeature = '';
-        let premiumUser = false; // Placeholder, you can set based on user status
-        const adModal = document.getElementById('adModal');
-        const countdownEl = document.getElementById('countdown');
-        
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    function openTool(name, icon, color) {
+        currentTool = name;
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('tool-view').style.display = 'block';
+        document.getElementById('tool-title').innerText = name;
+        document.getElementById('p-icon').className = "fas " + icon;
+        document.getElementById('p-icon').style.color = color;
+        window.scrollTo(0,0);
+    }
 
-        function showFeature(feature) {
-            currentFeature = feature;
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('featureScreen').style.display = 'block';
-            document.getElementById('featureTitle').innerText = `Mayur: ${feature.toUpperCase()}`;
-        }
+    function startProcess() {
+        const file = document.getElementById('fin').files[0];
+        if(!file) return;
 
-        function closeFeature() {
-            document.getElementById('dashboard').style.display = 'flex';
-            document.getElementById('featureScreen').style.display = 'none';
-        }
+        document.getElementById('upload-step').style.display = 'none';
+        document.getElementById('process-step').style.display = 'block';
+        document.getElementById('fname').innerText = file.name;
 
-        function checkPremium(feature) {
-            if(premiumUser) { showFeature(feature); } 
-            else { alert('⭐ Ye ek Premium (PRO) feature hai. Use karne ke liye support karein.'); }
-        }
-
-        async function doConversion() {
-            const file = document.getElementById('fileInput').files[0];
-            if(!file) return alert("Bhai, file toh select kar lo!");
-
-            adModal.style.display = 'flex';
-            let timer = premiumUser ? 2 : 8;
-            countdownEl.innerText = timer;
-            let downloadFunction = () => {};
-
-            // Start countdown first
-            const interval = setInterval(() => {
-                timer--;
-                countdownEl.innerText = timer;
-                if(timer <= 0) {
-                    clearInterval(interval);
-                    adModal.style.display = 'none';
-                    downloadFunction();
-                }
-            }, 1000);
-
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-
-                if(currentFeature === 'word') {
-                    // Optimized Word Conversion (Text extraction)
-                    let sections = [];
-                    for(let i=1; i<=pdf.numPages; i++){
-                        const page = await pdf.getPage(i);
-                        const text = await page.getTextContent();
-                        sections.push(new docx.Paragraph({ children: [new docx.TextRun(text.items.map(s => s.str).join(' '))] }));
-                    }
-                    const doc = new docx.Document({ sections: [{ children: sections }] });
-                    const blob = await docx.Packer.toBlob(doc);
-                    downloadFunction = () => saveAs(blob, file.name.replace(".pdf", "_Word.docx"));
-                } 
-                else if(currentFeature === 'jpg') {
-                    // JPG Zip Conversion
-                    const zip = new JSZip();
-                    for(let i=1; i<=pdf.numPages; i++){
-                        const page = await pdf.getPage(i);
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        const viewport = page.getViewport({scale: 1.5});
-                        canvas.height = viewport.height; canvas.width = viewport.width;
-                        await page.render({canvasContext: context, viewport: viewport}).promise;
-                        zip.file(`page_${i}.jpg`, canvas.toDataURL('image/jpeg', 0.8).split(',')[1], {base64: true});
-                    }
-                    const zipBlob = await zip.generateAsync({type:"blob"});
-                    downloadFunction = () => saveAs(zipBlob, file.name.replace(".pdf", "_JPG_Images.zip"));
-                }
-                else if(currentFeature === 'watermark') {
-                    // Local pdf-lib Watermarking
-                    const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        page.drawText('Mayur Team Rocks!', { x: 50, y: 50, size: 20, color: PDFLib.rgb(1, 0, 0), opacity: 0.5 });
-                    });
-                    const pdfBytes = await pdfDoc.save();
-                    downloadFunction = () => saveAs(new Blob([pdfBytes]), file.name.replace(".pdf", "_Watermarked.pdf"));
-                }
-                // Add more complex cases like split, rotate using pdf-lib here
-                
-                document.getElementById('featureStatus').innerText = "✅ Conversion successful. Waiting for ad timer.";
-            } catch(e) {
-                adModal.style.display = 'none'; // Close modal on error
-                document.getElementById('featureStatus').innerText = "❌ Error in conversion. File may be complex.";
-                clearInterval(interval);
+        let sec = 8;
+        const countdown = setInterval(() => {
+            sec--;
+            document.getElementById('timer').innerText = sec;
+            if(sec <= 0) {
+                clearInterval(countdown);
+                document.getElementById('timer-box').style.display = 'none';
+                showShare(file.name);
             }
-        }
-        document.getElementById('convertBtn').onclick = doConversion;
-    </script>
+        }, 1000);
+    }
+
+    function showShare(filename) {
+        document.getElementById('share-options').style.display = 'block';
+        const msg = encodeURIComponent("Hey! I just converted this file using I LOVE PDF TOOLKIT. Check it out: " + window.location.href);
+        document.getElementById('wa-share').href = "https://api.whatsapp.com/send?text=" + msg;
+        document.getElementById('tg-share').href = "https://t.me/share/url?url=" + window.location.href + "&text=" + msg;
+    }
+</script>
+
 </body>
-                </html>
-            
+                                </html>
+    
