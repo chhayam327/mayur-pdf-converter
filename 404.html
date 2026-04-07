@@ -3,238 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="YAHAN_APNA_CODE_DAALEIN" />
-    <title>I LOVE PDF TOOLKIT - Professional Free PDF Tools</title>
+    <title>I LOVE PDF TOOLKIT - Pro Editor & Viewer</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/downloadjs@1.4.7/download.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
     <style>
-        :root { --red: #e53935; --word: #2b579a; --excel: #217346; --jpg: #ff9800; --dark: #333; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: #f3f6f9; transition: 0.3s; }
-        
-        /* Dark Mode Styles */
-        body.dark-mode { background: #1a1a1a; color: #eee; }
-        body.dark-mode header, body.dark-mode .card, body.dark-mode .sidebar, body.dark-mode .process-box { background: #2d2d2d; color: #eee; border-color: #444; }
-        body.dark-mode .card p { color: #bbb; }
-
+        :root { --red: #e53935; --dark: #2d2d2d; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f3f6f9; }
         header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; cursor: pointer; color: inherit; text-decoration: none; }
+        .logo { font-size: 22px; font-weight: 900; cursor: pointer; color: #333; text-decoration: none; }
         .logo span { color: var(--red); }
 
-        /* Sidebar System */
-        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 2000; transition: 0.3s; padding-top: 60px; }
+        /* Sidebar & Layout */
+        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
-        .sidebar-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.2s; font-weight: 500; }
-        .sidebar-item:hover { background: #f9f9f9; color: var(--red); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
-
         .container { padding: 20px; max-width: 1100px; margin: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
-        .card { background: white; padding: 25px; border-radius: 12px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; text-align: left; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 4px solid var(--red); }
-        .card i { font-size: 35px; margin-bottom: 15px; display: block; }
+        
+        /* Grid & Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); border-bottom: 4px solid var(--red); }
+        .card i { font-size: 30px; margin-bottom: 10px; display: block; color: var(--red); }
 
-        #tool-view { display: none; text-align: center; padding-top: 20px; }
-        .btn { background: var(--red); color: white; border: none; padding: 18px 50px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 15px 0; width: 100%; max-width: 350px; }
-        .process-box { background: white; padding: 30px; border-radius: 20px; display: inline-block; width: 100%; max-width: 500px; border: 1px solid #ddd; }
+        /* Internal Viewer & Editor Area */
+        #viewer-container { display: none; background: #525659; padding: 20px; min-height: 100vh; text-align: center; }
+        #pdf-render { background: white; box-shadow: 0 0 20px rgba(0,0,0,0.3); margin: auto; max-width: 100%; }
+        .editor-controls { background: white; padding: 15px; position: sticky; top: 60px; z-index: 900; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; border-bottom: 2px solid var(--red); }
 
-        .share-list { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-        .s-btn { padding: 8px 12px; border-radius: 6px; color: white; text-decoration: none; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
-        .wa { background: #25D366; } .tg { background: #0088cc; } .copy { background: #333; }
+        /* Buttons */
+        .btn { background: var(--red); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-green { background: #43a047; }
+        .input-box { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
 
-        footer { padding: 40px; text-align: center; color: #999; font-size: 12px; }
+        #tool-ui { display: none; text-align: center; padding: 40px 20px; }
     </style>
 </head>
 <body>
 
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
-    <div class="sidebar-item" onclick="location.reload()"><i class="fas fa-home"></i> Home</div>
-    <div class="sidebar-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</div>
-    <div class="sidebar-item" onclick="toggleSidebar()"><i class="fas fa-tools"></i> All PDF Tools</div>
-    <div class="sidebar-item" onclick="alert('I Love PDF Toolkit is a secure local-first processing tool.')"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
-    <div class="sidebar-item" onclick="location.href='mailto:support@mayurteam.com'"><i class="fas fa-envelope"></i> Contact Us</div>
-    <div class="sidebar-item" onclick="window.scrollTo(0, document.body.scrollHeight); toggleSidebar();"><i class="fas fa-info-circle"></i> About Team</div>
+    <div style="padding:20px; font-weight:bold; border-bottom:1px solid #eee;">MENU</div>
+    <div onclick="location.reload()" style="padding:15px; cursor:pointer;"><i class="fas fa-home"></i> Dashboard</div>
+    <div onclick="alert('Watermark Tool Activated')" style="padding:15px; cursor:pointer;"><i class="fas fa-stamp"></i> Watermark Settings</div>
 </div>
 
 <header>
-    <div onclick="toggleSidebar()" style="cursor:pointer; font-size: 20px;"><i class="fas fa-bars"></i></div>
-    <a href="#" class="logo" onclick="location.reload()">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</a>
-    <div onclick="toggleDarkMode()" style="cursor:pointer;"><i class="fas fa-circle-half-stroke"></i></div>
+    <div onclick="document.getElementById('sidebar').classList.toggle('active')" style="cursor:pointer;"><i class="fas fa-bars"></i></div>
+    <a href="#" class="logo">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</a>
+    <div><i class="fas fa-user-circle"></i></div>
 </header>
 
 <div class="container" id="home-view">
-    <div style="text-align:center; margin-bottom: 30px;">
-        <h1>Professional PDF Tools for Everyone</h1>
-        <p>Unlimited usage, local processing, and 100% Free.</p>
-    </div>
-    
     <div class="grid">
-        <div class="card" onclick="openTool('Merge PDF', 'fa-layer-group', 'var(--red)')">
-            <i class="fas fa-layer-group" style="color: var(--red);"></i>
-            <h3>Merge PDF</h3>
-            <p>Combine multiple PDF files into one easily.</p>
-        </div>
-        <div class="card" onclick="openTool('PDF to WORD', 'fa-file-word', 'var(--word)')">
-            <i class="fas fa-file-word" style="color: var(--word);"></i>
-            <h3>PDF to WORD</h3>
-            <p>Convert PDF to editable Word doc format.</p>
-        </div>
-        <div class="card" onclick="openTool('Compress PDF', 'fa-compress-arrows-alt', '#43a047')">
-            <i class="fas fa-compress-arrows-alt" style="color: #43a047;"></i>
-            <h3>Compress PDF</h3>
-            <p>Reduce PDF size without losing quality.</p>
-        </div>
-        <div class="card" onclick="openTool('PDF to JPG', 'fa-file-image', 'var(--jpg)')">
-            <i class="fas fa-file-image" style="color: var(--jpg);"></i>
-            <h3>PDF to JPG</h3>
-            <p>Convert every PDF page into a JPG image.</p>
-        </div>
-        <div class="card" onclick="openTool('WORD to PDF', 'fa-file-pdf', 'var(--word)')">
-            <i class="fas fa-file-pdf" style="color: var(--word);"></i>
-            <h3>WORD to PDF</h3>
-            <p>Convert your DOCX files to secure PDF.</p>
-        </div>
-        <div class="card" onclick="openTool('Protect PDF', 'fa-lock', '#333')">
-            <i class="fas fa-lock" style="color: #333;"></i>
-            <h3>Protect PDF</h3>
-            <p>Add a password to your sensitive PDF files.</p>
-        </div>
-        <div class="card" onclick="openTool('Unlock PDF', 'fa-unlock', 'var(--red)')">
-            <i class="fas fa-unlock" style="color: var(--red);"></i>
-            <h3>Unlock PDF</h3>
-            <p>Remove passwords from protected PDF files.</p>
-        </div>
-        <div class="card" onclick="openTool('Excel to PDF', 'fa-file-excel', 'var(--excel)')">
-            <i class="fas fa-file-excel" style="color: var(--excel);"></i>
-            <h3>Excel to PDF</h3>
-            <p>Convert Excel spreadsheets into PDF documents.</p>
-        </div>
+        <div class="card" onclick="openTool('Merge PDF')"><i class="fas fa-layer-group"></i><h3>Merge PDF</h3></div>
+        <div class="card" onclick="openTool('PDF to Word')"><i class="fas fa-file-word"></i><h3>PDF to Word</h3></div>
+        <div class="card" onclick="openTool('Add Watermark')"><i class="fas fa-stamp"></i><h3>Watermark</h3></div>
+        <div class="card" onclick="openTool('Compress PDF')"><i class="fas fa-compress-arrows-alt"></i><h3>Compress</h3></div>
+        <div class="card" onclick="openTool('PDF to JPG')"><i class="fas fa-file-image"></i><h3>PDF to JPG</h3></div>
+        <div class="card" onclick="openTool('Unlock PDF')"><i class="fas fa-unlock"></i><h3>Unlock</h3></div>
+        <div class="card" onclick="openTool('Protect PDF')"><i class="fas fa-lock"></i><h3>Protect</h3></div>
+        <div class="card" onclick="openTool('Edit PDF')"><i class="fas fa-edit"></i><h3>Edit PDF</h3></div>
     </div>
 </div>
 
-<div class="container" id="tool-view">
-    <h2 id="tool-title">Tool Name</h2>
-    <div id="upload-stage">
-        <button class="btn" onclick="document.getElementById('fin').click()">Select Files</button>
-        <input type="file" id="fin" hidden multiple onchange="showConvert()">
-    </div>
-
-    <div id="convert-stage" style="display:none;">
-        <div class="process-box">
-            <i id="t-icon" class="fas fa-file-pdf" style="font-size: 50px;"></i>
-            <p id="f-name" style="font-weight: bold; margin: 15px 0;"></p>
-            <button class="btn" style="background:#333;" onclick="startTimer()">Convert Now</button>
-        </div>
-    </div>
-
-    <div id="timer-stage" style="display:none;">
-        <div class="process-box">
-            <p style="font-size: 22px; color: var(--red); font-weight: bold;">Processing... <span id="clock">8</span>s</p>
-            <p>Please do not refresh the page.</p>
-        </div>
-    </div>
-
-    <div id="download-stage" style="display:none;">
-        <div class="process-box">
-            <h3 style="color:#43a047;"><i class="fas fa-check-circle"></i> Complete!</h3>
-            <button class="btn" style="background:#43a047;" id="dl-btn">Download Now</button>
-            <div class="share-list">
-                <a href="#" id="sw" class="s-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a href="#" id="st" class="s-btn tg"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#" onclick="copyLink()" class="s-btn copy"><i class="fas fa-link"></i> Link</a>
-            </div>
-        </div>
+<div id="tool-ui" class="container">
+    <h2 id="t-title">Tool</h2>
+    <input type="file" id="file-in" hidden multiple onchange="handleFileSelection()">
+    <button class="btn" style="font-size:20px;" onclick="document.getElementById('file-in').click()">Choose Files</button>
+    <div id="convert-section" style="display:none; margin-top:20px;">
+        <p id="f-count"></p>
+        <input type="text" id="watermark-text" placeholder="Enter Watermark Text" class="input-box">
+        <br><br>
+        <button class="btn btn-green" onclick="startProcessing()">Convert & Open in Website</button>
     </div>
 </div>
 
-<footer>&copy; 2026 I LOVE PDF TOOLKIT - Managed by Mayur Nannavare</footer>
+<div id="viewer-container">
+    <div class="editor-controls">
+        <button class="btn" onclick="location.reload()">Back</button>
+        <button class="btn btn-green" id="final-download">Save & Download</button>
+        <span style="color:#333; font-weight:bold; align-self:center;">Preview Mode</span>
+    </div>
+    <canvas id="pdf-render"></canvas>
+    <div style="color:white; margin-top:10px;">Page 1 of <span id="page-count">1</span></div>
+</div>
 
 <script>
     let activeTool = "";
-    let files = [];
+    let selectedFiles = [];
+    let currentPdfBytes = null;
 
-    function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        const ov = document.getElementById('overlay');
-        sb.classList.toggle('active');
-        ov.style.display = sb.classList.contains('active') ? 'block' : 'none';
-    }
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
-    }
-
-    function openTool(name, icon, color) {
+    function openTool(name) {
         activeTool = name;
         document.getElementById('home-view').style.display = 'none';
-        document.getElementById('tool-view').style.display = 'block';
-        document.getElementById('tool-title').innerText = name;
-        document.getElementById('t-icon').className = "fas " + icon;
-        document.getElementById('t-icon').style.color = color;
+        document.getElementById('tool-ui').style.display = 'block';
+        document.getElementById('t-title').innerText = name;
     }
 
-    function showConvert() {
-        const f = document.getElementById('fin').files;
+    function handleFileSelection() {
+        const f = document.getElementById('file-in').files;
         if(f.length === 0) return;
-        files = Array.from(f);
-        document.getElementById('upload-stage').style.display = 'none';
-        document.getElementById('convert-stage').style.display = 'block';
-        document.getElementById('f-name').innerText = f.length > 1 ? f.length + " Files" : f[0].name;
+        selectedFiles = Array.from(f);
+        document.getElementById('convert-section').style.display = 'block';
+        document.getElementById('f-count').innerText = f.length + " file(s) selected";
     }
 
-    function startTimer() {
-        document.getElementById('convert-stage').style.display = 'none';
-        document.getElementById('timer-stage').style.display = 'block';
-        let s = 8;
-        const itv = setInterval(() => {
-            s--;
-            document.getElementById('clock').innerText = s;
-            if(s <= 0) {
-                clearInterval(itv);
-                document.getElementById('timer-stage').style.display = 'none';
-                processFinal();
-            }
-        }, 1000);
-    }
-
-    async function processFinal() {
+    async function startProcessing() {
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
         try {
-            const { PDFDocument } = PDFLib;
-            let data, name = files[0].name;
-
-            if (activeTool === "Merge PDF" && files.length > 1) {
-                const merged = await PDFDocument.create();
-                for (const f of files) {
-                    const pdf = await PDFDocument.load(await f.arrayBuffer());
-                    const pages = await merged.copyPages(pdf, pdf.getPageIndices());
-                    pages.forEach(p => merged.addPage(p));
+            let pdfDoc;
+            if(activeTool === "Merge PDF" && selectedFiles.length > 1) {
+                pdfDoc = await PDFDocument.create();
+                for(let f of selectedFiles) {
+                    const doc = await PDFDocument.load(await f.arrayBuffer());
+                    const pages = await pdfDoc.copyPages(doc, doc.getPageIndices());
+                    pages.forEach(p => pdfDoc.addPage(p));
                 }
-                data = await merged.save();
-                name = "merged_toolkit.pdf";
             } else {
-                data = await files[0].arrayBuffer();
-                if(activeTool === "PDF to WORD") name = name.replace(".pdf", ".doc");
+                pdfDoc = await PDFDocument.load(await selectedFiles[0].arrayBuffer());
             }
 
-            document.getElementById('download-stage').style.display = 'block';
-            document.getElementById('dl-btn').onclick = () => download(data, name, "application/pdf");
-            
-            const txt = encodeURIComponent("Try this free PDF Tool: " + window.location.href);
-            document.getElementById('sw').href = "https://api.whatsapp.com/send?text=" + txt;
-            document.getElementById('st').href = "https://t.me/share/url?url=" + window.location.href;
+            // Watermark Logic
+            const wText = document.getElementById('watermark-text').value;
+            if(wText) {
+                const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+                const pages = pdfDoc.getPages();
+                pages.forEach(p => {
+                    p.drawText(wText, { x: 50, y: 50, size: 50, font: font, color: rgb(0.7, 0.7, 0.7), opacity: 0.5, rotate: PDFLib.degrees(45) });
+                });
+            }
+
+            currentPdfBytes = await pdfDoc.save();
+            renderInternalPDF(currentPdfBytes);
+
         } catch (e) {
-            alert("Error processing file. Please try a smaller PDF.");
-            location.reload();
+            alert("Error: Mobile memory full. Try small file.");
         }
     }
 
-    function copyLink() {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link Copied!");
+    async function renderInternalPDF(data) {
+        document.getElementById('tool-ui').style.display = 'none';
+        document.getElementById('viewer-container').style.display = 'block';
+        
+        const loadingTask = pdfjsLib.getDocument({data: data});
+        const pdf = await loadingTask.promise;
+        document.getElementById('page-count').innerText = pdf.numPages;
+
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({scale: 1.5});
+        const canvas = document.getElementById('pdf-render');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({canvasContext: context, viewport: viewport}).promise;
+
+        document.getElementById('final-download').onclick = () => {
+            download(data, "I_LOVE_PDF_Edited.pdf", "application/pdf");
+        };
     }
 </script>
 </body>
