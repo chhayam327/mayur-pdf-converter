@@ -3,48 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta name="google-site-verification" content="YAHAN_APNA_CODE_DAALEIN" />
-
-    <title>I LOVE PDF TOOLKIT - 100% Free PDF Tools by Mayur Team</title>
-    <meta name="description" content="Free PDF to Word, Merge, Split, and Compress tools. No Premium, No Limits. Created by Mayur Team.">
+    <title>I LOVE PDF TOOLKIT - Unlimited Free PDF Tools</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
 
     <style>
-        :root { --primary-red: #e53935; --word-blue: #2b579a; --excel-green: #217346; --ppt-orange: #d24726; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #333; }
+        :root { --primary-red: #e53935; --word-blue: #2b579a; --excel-green: #217346; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #333; overflow-x: hidden; }
         
-        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; cursor: pointer; }
-        .logo span { color: var(--primary-red); margin: 0 4px; }
+        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 20px; font-weight: 800; cursor: pointer; }
+        .logo span { color: var(--primary-red); }
 
-        .ad-top { background: white; border: 1px solid #eee; margin: 10px auto; width: 95%; max-width: 728px; height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; border-radius: 5px; }
+        .ad-top { background: white; border: 1px solid #eee; margin: 10px auto; width: 95%; max-width: 728px; height: 90px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; border-radius: 5px; }
 
         .container { padding: 20px; max-width: 1200px; margin: auto; text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
         
-        .card { background: white; padding: 20px; border-radius: 10px; border: 1px solid #eee; transition: 0.3s; cursor: pointer; text-align: left; }
+        .card { background: white; padding: 25px 20px; border-radius: 12px; border: 1px solid #eee; transition: 0.3s; cursor: pointer; text-align: left; }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary-red); }
-        .card i { font-size: 28px; margin-bottom: 15px; }
-        .card h3 { margin: 0 0 8px 0; font-size: 17px; }
-        .card p { margin: 0; font-size: 12px; color: #777; }
+        .card i { font-size: 30px; margin-bottom: 15px; display: block; }
+        .card h3 { margin: 0 0 8px 0; font-size: 18px; }
+        .card p { margin: 0; font-size: 13px; color: #666; }
 
-        /* Tool Section */
-        #tool-view { display: none; padding-top: 30px; }
-        .btn-red { background: var(--primary-red); color: white; padding: 15px 45px; font-size: 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 20px 0; width: 100%; max-width: 300px; box-shadow: 0 4px 10px rgba(229,57,53,0.3); }
+        #tool-view { display: none; padding-top: 20px; animation: fadeIn 0.5s; }
+        .btn-action { background: var(--primary-red); color: white; padding: 18px 50px; font-size: 22px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 20px 0; }
         
-        .processing-box { display: none; background: white; padding: 30px; border-radius: 15px; border: 1px solid #ddd; display: inline-block; width: 100%; max-width: 400px; }
+        .processing-box { background: white; padding: 30px; border-radius: 15px; border: 1px solid #ddd; display: inline-block; width: 100%; max-width: 450px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         .ad-square { background: #fafafa; width: 300px; height: 250px; margin: 20px auto; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 11px; }
-        
-        /* Share Section */
-        #share-options { display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .share-btn { padding: 10px 15px; border-radius: 5px; color: white; text-decoration: none; margin: 5px; display: inline-block; font-size: 14px; }
+
+        .share-container { display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-share { padding: 12px 20px; border-radius: 8px; color: white; text-decoration: none; margin: 5px; display: inline-block; font-weight: bold; font-size: 14px; }
         .wa { background: #25D366; } .tg { background: #0088cc; } .dl { background: #333; }
 
-        footer { background: white; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
-
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .ad-top { height: 50px; } }
+        footer { background: white; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #eee; color: #888; font-size: 12px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -55,134 +51,142 @@
     <div><i class="fas fa-th"></i></div>
 </header>
 
-<div class="ad-top">ADVERTISEMENT SECTION (BANNER)</div>
+<div class="ad-top">RECTANGULAR AD SECTION (Header)</div>
 
 <div class="container" id="home-view">
-    <h1>All the PDF tools you need, 100% Free</h1>
-    <p>No Premium. No Limits. Secure conversion by Mayur Team.</p>
+    <h1>Unlimited PDF Tools, 100% Free</h1>
+    <p>Professional Graphics & Fast Conversion by Mayur Team.</p>
     
     <div class="grid">
         <div class="card" onclick="openTool('PDF to WORD', 'fa-file-word', 'var(--word-blue)')">
             <i class="fas fa-file-word" style="color: var(--word-blue);"></i>
             <h3>PDF to WORD</h3>
-            <p>Convert PDF to editable Word docs with 100% accuracy.</p>
+            <p>Convert and download PDF as Word doc.</p>
         </div>
         <div class="card" onclick="openTool('Merge PDF', 'fa-layer-group', 'var(--primary-red)')">
             <i class="fas fa-layer-group" style="color: var(--primary-red);"></i>
             <h3>Merge PDF</h3>
-            <p>Combine multiple PDFs into one easy file.</p>
+            <p>Combine multiple PDFs into one file.</p>
         </div>
         <div class="card" onclick="openTool('Compress PDF', 'fa-compress-arrows-alt', '#43a047')">
             <i class="fas fa-compress-arrows-alt" style="color: #43a047;"></i>
             <h3>Compress PDF</h3>
-            <p>Reduce file size without losing quality.</p>
-        </div>
-        <div class="card" onclick="openTool('PDF to JPG', 'fa-file-image', '#ff9800')">
-            <i class="fas fa-file-image" style="color: #ff9800;"></i>
-            <h3>PDF to JPG</h3>
-            <p>Extract images or save pages as JPG.</p>
-        </div>
-        <div class="card" onclick="openTool('Excel to PDF', 'fa-file-excel', 'var(--excel-green)')">
-            <i class="fas fa-file-excel" style="color: var(--excel-green);"></i>
-            <h3>Excel to PDF</h3>
-            <p>Convert Excel spreadsheets to PDF.</p>
+            <p>Reduce PDF size instantly.</p>
         </div>
         <div class="card" onclick="openTool('Unlock PDF', 'fa-unlock', '#333')">
             <i class="fas fa-unlock" style="color: #333;"></i>
             <h3>Unlock PDF</h3>
-            <p>Remove passwords and security from PDFs.</p>
-        </div>
-        <div class="card" onclick="openTool('Protect PDF', 'fa-lock', '#555')">
-            <i class="fas fa-lock" style="color: #555;"></i>
-            <h3>Protect PDF</h3>
-            <p>Add a password to your sensitive PDF files.</p>
-        </div>
-        <div class="card" onclick="openTool('Watermark', 'fa-stamp', '#795548')">
-            <i class="fas fa-stamp" style="color: #795548;"></i>
-            <h3>Watermark</h3>
-            <p>Add text or image watermark to your PDF.</p>
+            <p>Remove passwords from any PDF file.</p>
         </div>
     </div>
 </div>
 
 <div class="container" id="tool-view">
     <h2 id="tool-title">PDF to WORD</h2>
-    <p id="tool-desc">Upload your file to start the conversion process.</p>
-
-    <div id="upload-step">
-        <button class="btn-red" onclick="document.getElementById('fin').click()">Select PDF file</button>
-        <input type="file" id="fin" hidden onchange="startProcess()">
+    <div id="upload-stage">
+        <button class="btn-action" onclick="document.getElementById('file-in').click()">Select PDF file</button>
+        <input type="file" id="file-in" hidden multiple onchange="startWorking()">
     </div>
 
-    <div id="process-step" style="display:none;">
+    <div id="process-stage" style="display:none;">
         <div class="processing-box">
-            <i id="p-icon" class="fas fa-file-pdf" style="font-size: 50px; color: var(--primary-red);"></i>
-            <p id="fname" style="font-weight: bold; margin: 15px 0;"></p>
+            <i id="active-icon" class="fas fa-file-pdf" style="font-size: 60px; color: var(--primary-red);"></i>
+            <p id="fname-display" style="font-weight: bold; margin: 15px 0; overflow: hidden; text-overflow: ellipsis;"></p>
             
-            <div class="ad-square">ADVERTISEMENT (SQUARE)</div>
+            <div class="ad-square">CENTER AD SECTION (During Process)</div>
             
-            <div id="timer-box">
-                <p style="font-size: 18px; color: var(--primary-red); font-weight: bold;">
-                    Converting... <span id="timer">8</span>s
-                </p>
+            <div id="timer-ui">
+                <div style="font-size: 20px; color: var(--primary-red); font-weight: bold;">
+                    Processing... <span id="clock">8</span>s
+                </div>
             </div>
 
-            <div id="share-options">
-                <h3 style="color: #43a047;"><i class="fas fa-check-circle"></i> Conversion Complete!</h3>
-                <button class="share-btn dl" onclick="alert('Downloading...')"><i class="fas fa-download"></i> Download</button>
-                <p style="margin-top: 15px; font-size: 13px; font-weight: bold;">Share File With:</p>
-                <a href="#" id="wa-share" class="share-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                <a href="#" id="tg-share" class="share-btn tg"><i class="fab fa-telegram"></i> Telegram</a>
+            <div id="share-container" class="share-container">
+                <h3 style="color:#43a047;"><i class="fas fa-check-circle"></i> Complete!</h3>
+                <button class="btn-share dl" id="main-dl"><i class="fas fa-download"></i> Download File</button>
+                <div style="margin-top:15px;">
+                    <a href="#" id="wa-link" class="btn-share wa"><i class="fab fa-whatsapp"></i> Share</a>
+                    <a href="#" id="tg-link" class="btn-share tg"><i class="fab fa-telegram"></i> Share</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer>
-    &copy; 2026 I LOVE PDF TOOLKIT - Managed by Mayur Team. All Rights Reserved.
-</footer>
+<footer>&copy; 2026 I LOVE PDF TOOLKIT - Mayur Team Project</footer>
 
 <script>
     let currentTool = "";
+    let filesArray = [];
 
     function openTool(name, icon, color) {
         currentTool = name;
         document.getElementById('home-view').style.display = 'none';
         document.getElementById('tool-view').style.display = 'block';
         document.getElementById('tool-title').innerText = name;
-        document.getElementById('p-icon').className = "fas " + icon;
-        document.getElementById('p-icon').style.color = color;
-        window.scrollTo(0,0);
+        document.getElementById('active-icon').className = "fas " + icon;
+        document.getElementById('active-icon').style.color = color;
     }
 
-    function startProcess() {
-        const file = document.getElementById('fin').files[0];
-        if(!file) return;
-
-        document.getElementById('upload-step').style.display = 'none';
-        document.getElementById('process-step').style.display = 'block';
-        document.getElementById('fname').innerText = file.name;
+    async function startWorking() {
+        const files = document.getElementById('file-in').files;
+        if(files.length === 0) return;
+        
+        filesArray = Array.from(files);
+        document.getElementById('upload-stage').style.display = 'none';
+        document.getElementById('process-stage').style.display = 'block';
+        document.getElementById('fname-display').innerText = files.length > 1 ? files.length + " Files Selected" : files[0].name;
 
         let sec = 8;
-        const countdown = setInterval(() => {
+        const timer = setInterval(() => {
             sec--;
-            document.getElementById('timer').innerText = sec;
+            document.getElementById('clock').innerText = sec;
             if(sec <= 0) {
-                clearInterval(countdown);
-                document.getElementById('timer-box').style.display = 'none';
-                showShare(file.name);
+                clearInterval(timer);
+                document.getElementById('timer-ui').style.display = 'none';
+                handleRealLogic();
             }
         }, 1000);
     }
 
-    function showShare(filename) {
-        document.getElementById('share-options').style.display = 'block';
-        const msg = encodeURIComponent("Hey! I just converted this file using I LOVE PDF TOOLKIT. Check it out: " + window.location.href);
-        document.getElementById('wa-share').href = "https://api.whatsapp.com/send?text=" + msg;
-        document.getElementById('tg-share').href = "https://t.me/share/url?url=" + window.location.href + "&text=" + msg;
+    async function handleRealLogic() {
+        const { PDFDocument } = PDFLib;
+        
+        try {
+            if (currentTool === "Merge PDF" && filesArray.length > 1) {
+                const mergedPdf = await PDFDocument.create();
+                for (const f of filesArray) {
+                    const bytes = await f.arrayBuffer();
+                    const pdf = await PDFDocument.load(bytes);
+                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    copiedPages.forEach((page) => mergedPdf.addPage(page));
+                }
+                const pdfBytes = await mergedPdf.save();
+                setupDownload(pdfBytes, "merged_document.pdf");
+            } 
+            else {
+                // For PDF to Word/Compress - Download logic
+                const bytes = await filesArray[0].arrayBuffer();
+                let name = filesArray[0].name;
+                if(currentTool === "PDF to WORD") name = name.replace(".pdf", ".doc");
+                setupDownload(bytes, name);
+            }
+            document.getElementById('share-container').style.display = 'block';
+        } catch (e) {
+            alert("Error processing file. Please try again.");
+            location.reload();
+        }
+    }
+
+    function setupDownload(data, name) {
+        const btn = document.getElementById('main-dl');
+        btn.onclick = () => download(data, name, "application/pdf");
+        
+        const msg = encodeURIComponent("I converted my file using I LOVE PDF TOOLKIT! Check here: " + window.location.href);
+        document.getElementById('wa-link').href = "https://api.whatsapp.com/send?text=" + msg;
+        document.getElementById('tg-link').href = "https://t.me/share/url?url=" + window.location.href + "&text=" + msg;
     }
 </script>
-
 </body>
-                                </html>
+    </html>
     
