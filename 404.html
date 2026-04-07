@@ -4,189 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="YAHAN_APNA_CODE_DAALEIN" />
-    <title>I LOVE PDF TOOLKIT - Unlimited Free PDF Tools</title>
+    <title>I LOVE PDF TOOLKIT - Professional Free PDF Tools</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="https://unpkg.com/downloadjs@1.4.7/download.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/downloadjs@1.4.7/download.min.js"></script>
 
     <style>
-        :root { --primary-red: #e53935; --word-blue: #2b579a; --excel-green: #217346; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #333; overflow-x: hidden; }
+        :root { --red: #e53935; --word: #2b579a; --excel: #217346; --jpg: #ff9800; --dark: #333; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background: #f3f6f9; transition: 0.3s; }
         
+        /* Dark Mode Styles */
+        body.dark-mode { background: #1a1a1a; color: #eee; }
+        body.dark-mode header, body.dark-mode .card, body.dark-mode .sidebar, body.dark-mode .process-box { background: #2d2d2d; color: #eee; border-color: #444; }
+        body.dark-mode .card p { color: #bbb; }
+
         header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 20px; font-weight: 800; cursor: pointer; }
-        .logo span { color: var(--primary-red); }
+        .logo { font-size: 22px; font-weight: 900; cursor: pointer; color: inherit; text-decoration: none; }
+        .logo span { color: var(--red); }
 
-        .ad-top { background: white; border: 1px solid #eee; margin: 10px auto; width: 95%; max-width: 728px; height: 90px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; border-radius: 5px; }
+        /* Sidebar System */
+        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 2000; transition: 0.3s; padding-top: 60px; }
+        .sidebar.active { left: 0; }
+        .sidebar-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid #eee; transition: 0.2s; font-weight: 500; }
+        .sidebar-item:hover { background: #f9f9f9; color: var(--red); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; display: none; }
 
-        .container { padding: 20px; max-width: 1200px; margin: auto; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
-        
-        .card { background: white; padding: 25px 20px; border-radius: 12px; border: 1px solid #eee; transition: 0.3s; cursor: pointer; text-align: left; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-bottom: 4px solid var(--primary-red); }
-        .card i { font-size: 30px; margin-bottom: 15px; display: block; }
-        .card h3 { margin: 0 0 8px 0; font-size: 18px; }
-        .card p { margin: 0; font-size: 13px; color: #666; }
+        .container { padding: 20px; max-width: 1100px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 25px; border-radius: 12px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; text-align: left; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-bottom: 4px solid var(--red); }
+        .card i { font-size: 35px; margin-bottom: 15px; display: block; }
 
-        #tool-view { display: none; padding-top: 20px; animation: fadeIn 0.5s; }
-        .btn-action { background: var(--primary-red); color: white; padding: 18px 50px; font-size: 22px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 20px 0; }
-        
-        .processing-box { background: white; padding: 30px; border-radius: 15px; border: 1px solid #ddd; display: inline-block; width: 100%; max-width: 450px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .ad-square { background: #fafafa; width: 300px; height: 250px; margin: 20px auto; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 11px; }
+        #tool-view { display: none; text-align: center; padding-top: 20px; }
+        .btn { background: var(--red); color: white; border: none; padding: 18px 50px; font-size: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 15px 0; width: 100%; max-width: 350px; }
+        .process-box { background: white; padding: 30px; border-radius: 20px; display: inline-block; width: 100%; max-width: 500px; border: 1px solid #ddd; }
 
-        .share-container { display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-share { padding: 12px 20px; border-radius: 8px; color: white; text-decoration: none; margin: 5px; display: inline-block; font-weight: bold; font-size: 14px; }
-        .wa { background: #25D366; } .tg { background: #0088cc; } .dl { background: #333; }
+        .share-list { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .s-btn { padding: 8px 12px; border-radius: 6px; color: white; text-decoration: none; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .wa { background: #25D366; } .tg { background: #0088cc; } .copy { background: #333; }
 
-        footer { background: white; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #eee; color: #888; font-size: 12px; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        footer { padding: 40px; text-align: center; color: #999; font-size: 12px; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-item" onclick="location.reload()"><i class="fas fa-home"></i> Home</div>
+    <div class="sidebar-item" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</div>
+    <div class="sidebar-item" onclick="toggleSidebar()"><i class="fas fa-tools"></i> All PDF Tools</div>
+    <div class="sidebar-item" onclick="alert('I Love PDF Toolkit is a secure local-first processing tool.')"><i class="fas fa-shield-alt"></i> Privacy Policy</div>
+    <div class="sidebar-item" onclick="location.href='mailto:support@mayurteam.com'"><i class="fas fa-envelope"></i> Contact Us</div>
+    <div class="sidebar-item" onclick="window.scrollTo(0, document.body.scrollHeight); toggleSidebar();"><i class="fas fa-info-circle"></i> About Team</div>
+</div>
+
 <header>
-    <div onclick="location.reload()"><i class="fas fa-bars"></i></div>
-    <div class="logo" onclick="location.reload()">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</div>
-    <div><i class="fas fa-th"></i></div>
+    <div onclick="toggleSidebar()" style="cursor:pointer; font-size: 20px;"><i class="fas fa-bars"></i></div>
+    <a href="#" class="logo" onclick="location.reload()">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</a>
+    <div onclick="toggleDarkMode()" style="cursor:pointer;"><i class="fas fa-circle-half-stroke"></i></div>
 </header>
 
-<div class="ad-top">RECTANGULAR AD SECTION (Header)</div>
-
 <div class="container" id="home-view">
-    <h1>Unlimited PDF Tools, 100% Free</h1>
-    <p>Professional Graphics & Fast Conversion by Mayur Team.</p>
+    <div style="text-align:center; margin-bottom: 30px;">
+        <h1>Professional PDF Tools for Everyone</h1>
+        <p>Unlimited usage, local processing, and 100% Free.</p>
+    </div>
     
     <div class="grid">
-        <div class="card" onclick="openTool('PDF to WORD', 'fa-file-word', 'var(--word-blue)')">
-            <i class="fas fa-file-word" style="color: var(--word-blue);"></i>
-            <h3>PDF to WORD</h3>
-            <p>Convert and download PDF as Word doc.</p>
-        </div>
-        <div class="card" onclick="openTool('Merge PDF', 'fa-layer-group', 'var(--primary-red)')">
-            <i class="fas fa-layer-group" style="color: var(--primary-red);"></i>
+        <div class="card" onclick="openTool('Merge PDF', 'fa-layer-group', 'var(--red)')">
+            <i class="fas fa-layer-group" style="color: var(--red);"></i>
             <h3>Merge PDF</h3>
-            <p>Combine multiple PDFs into one file.</p>
+            <p>Combine multiple PDF files into one easily.</p>
+        </div>
+        <div class="card" onclick="openTool('PDF to WORD', 'fa-file-word', 'var(--word)')">
+            <i class="fas fa-file-word" style="color: var(--word);"></i>
+            <h3>PDF to WORD</h3>
+            <p>Convert PDF to editable Word doc format.</p>
         </div>
         <div class="card" onclick="openTool('Compress PDF', 'fa-compress-arrows-alt', '#43a047')">
             <i class="fas fa-compress-arrows-alt" style="color: #43a047;"></i>
             <h3>Compress PDF</h3>
-            <p>Reduce PDF size instantly.</p>
+            <p>Reduce PDF size without losing quality.</p>
         </div>
-        <div class="card" onclick="openTool('Unlock PDF', 'fa-unlock', '#333')">
-            <i class="fas fa-unlock" style="color: #333;"></i>
+        <div class="card" onclick="openTool('PDF to JPG', 'fa-file-image', 'var(--jpg)')">
+            <i class="fas fa-file-image" style="color: var(--jpg);"></i>
+            <h3>PDF to JPG</h3>
+            <p>Convert every PDF page into a JPG image.</p>
+        </div>
+        <div class="card" onclick="openTool('WORD to PDF', 'fa-file-pdf', 'var(--word)')">
+            <i class="fas fa-file-pdf" style="color: var(--word);"></i>
+            <h3>WORD to PDF</h3>
+            <p>Convert your DOCX files to secure PDF.</p>
+        </div>
+        <div class="card" onclick="openTool('Protect PDF', 'fa-lock', '#333')">
+            <i class="fas fa-lock" style="color: #333;"></i>
+            <h3>Protect PDF</h3>
+            <p>Add a password to your sensitive PDF files.</p>
+        </div>
+        <div class="card" onclick="openTool('Unlock PDF', 'fa-unlock', 'var(--red)')">
+            <i class="fas fa-unlock" style="color: var(--red);"></i>
             <h3>Unlock PDF</h3>
-            <p>Remove passwords from any PDF file.</p>
+            <p>Remove passwords from protected PDF files.</p>
+        </div>
+        <div class="card" onclick="openTool('Excel to PDF', 'fa-file-excel', 'var(--excel)')">
+            <i class="fas fa-file-excel" style="color: var(--excel);"></i>
+            <h3>Excel to PDF</h3>
+            <p>Convert Excel spreadsheets into PDF documents.</p>
         </div>
     </div>
 </div>
 
 <div class="container" id="tool-view">
-    <h2 id="tool-title">PDF to WORD</h2>
+    <h2 id="tool-title">Tool Name</h2>
     <div id="upload-stage">
-        <button class="btn-action" onclick="document.getElementById('file-in').click()">Select PDF file</button>
-        <input type="file" id="file-in" hidden multiple onchange="startWorking()">
+        <button class="btn" onclick="document.getElementById('fin').click()">Select Files</button>
+        <input type="file" id="fin" hidden multiple onchange="showConvert()">
     </div>
 
-    <div id="process-stage" style="display:none;">
-        <div class="processing-box">
-            <i id="active-icon" class="fas fa-file-pdf" style="font-size: 60px; color: var(--primary-red);"></i>
-            <p id="fname-display" style="font-weight: bold; margin: 15px 0; overflow: hidden; text-overflow: ellipsis;"></p>
-            
-            <div class="ad-square">CENTER AD SECTION (During Process)</div>
-            
-            <div id="timer-ui">
-                <div style="font-size: 20px; color: var(--primary-red); font-weight: bold;">
-                    Processing... <span id="clock">8</span>s
-                </div>
-            </div>
+    <div id="convert-stage" style="display:none;">
+        <div class="process-box">
+            <i id="t-icon" class="fas fa-file-pdf" style="font-size: 50px;"></i>
+            <p id="f-name" style="font-weight: bold; margin: 15px 0;"></p>
+            <button class="btn" style="background:#333;" onclick="startTimer()">Convert Now</button>
+        </div>
+    </div>
 
-            <div id="share-container" class="share-container">
-                <h3 style="color:#43a047;"><i class="fas fa-check-circle"></i> Complete!</h3>
-                <button class="btn-share dl" id="main-dl"><i class="fas fa-download"></i> Download File</button>
-                <div style="margin-top:15px;">
-                    <a href="#" id="wa-link" class="btn-share wa"><i class="fab fa-whatsapp"></i> Share</a>
-                    <a href="#" id="tg-link" class="btn-share tg"><i class="fab fa-telegram"></i> Share</a>
-                </div>
+    <div id="timer-stage" style="display:none;">
+        <div class="process-box">
+            <p style="font-size: 22px; color: var(--red); font-weight: bold;">Processing... <span id="clock">8</span>s</p>
+            <p>Please do not refresh the page.</p>
+        </div>
+    </div>
+
+    <div id="download-stage" style="display:none;">
+        <div class="process-box">
+            <h3 style="color:#43a047;"><i class="fas fa-check-circle"></i> Complete!</h3>
+            <button class="btn" style="background:#43a047;" id="dl-btn">Download Now</button>
+            <div class="share-list">
+                <a href="#" id="sw" class="s-btn wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="#" id="st" class="s-btn tg"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="#" onclick="copyLink()" class="s-btn copy"><i class="fas fa-link"></i> Link</a>
             </div>
         </div>
     </div>
 </div>
 
-<footer>&copy; 2026 I LOVE PDF TOOLKIT - Mayur Team Project</footer>
+<footer>&copy; 2026 I LOVE PDF TOOLKIT - Managed by Mayur Nannavare</footer>
 
 <script>
-    let currentTool = "";
-    let filesArray = [];
+    let activeTool = "";
+    let files = [];
+
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('overlay');
+        sb.classList.toggle('active');
+        ov.style.display = sb.classList.contains('active') ? 'block' : 'none';
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+    }
 
     function openTool(name, icon, color) {
-        currentTool = name;
+        activeTool = name;
         document.getElementById('home-view').style.display = 'none';
         document.getElementById('tool-view').style.display = 'block';
         document.getElementById('tool-title').innerText = name;
-        document.getElementById('active-icon').className = "fas " + icon;
-        document.getElementById('active-icon').style.color = color;
+        document.getElementById('t-icon').className = "fas " + icon;
+        document.getElementById('t-icon').style.color = color;
     }
 
-    async function startWorking() {
-        const files = document.getElementById('file-in').files;
-        if(files.length === 0) return;
-        
-        filesArray = Array.from(files);
+    function showConvert() {
+        const f = document.getElementById('fin').files;
+        if(f.length === 0) return;
+        files = Array.from(f);
         document.getElementById('upload-stage').style.display = 'none';
-        document.getElementById('process-stage').style.display = 'block';
-        document.getElementById('fname-display').innerText = files.length > 1 ? files.length + " Files Selected" : files[0].name;
+        document.getElementById('convert-stage').style.display = 'block';
+        document.getElementById('f-name').innerText = f.length > 1 ? f.length + " Files" : f[0].name;
+    }
 
-        let sec = 8;
-        const timer = setInterval(() => {
-            sec--;
-            document.getElementById('clock').innerText = sec;
-            if(sec <= 0) {
-                clearInterval(timer);
-                document.getElementById('timer-ui').style.display = 'none';
-                handleRealLogic();
+    function startTimer() {
+        document.getElementById('convert-stage').style.display = 'none';
+        document.getElementById('timer-stage').style.display = 'block';
+        let s = 8;
+        const itv = setInterval(() => {
+            s--;
+            document.getElementById('clock').innerText = s;
+            if(s <= 0) {
+                clearInterval(itv);
+                document.getElementById('timer-stage').style.display = 'none';
+                processFinal();
             }
         }, 1000);
     }
 
-    async function handleRealLogic() {
-        const { PDFDocument } = PDFLib;
-        
+    async function processFinal() {
         try {
-            if (currentTool === "Merge PDF" && filesArray.length > 1) {
-                const mergedPdf = await PDFDocument.create();
-                for (const f of filesArray) {
-                    const bytes = await f.arrayBuffer();
-                    const pdf = await PDFDocument.load(bytes);
-                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-                    copiedPages.forEach((page) => mergedPdf.addPage(page));
+            const { PDFDocument } = PDFLib;
+            let data, name = files[0].name;
+
+            if (activeTool === "Merge PDF" && files.length > 1) {
+                const merged = await PDFDocument.create();
+                for (const f of files) {
+                    const pdf = await PDFDocument.load(await f.arrayBuffer());
+                    const pages = await merged.copyPages(pdf, pdf.getPageIndices());
+                    pages.forEach(p => merged.addPage(p));
                 }
-                const pdfBytes = await mergedPdf.save();
-                setupDownload(pdfBytes, "merged_document.pdf");
-            } 
-            else {
-                // For PDF to Word/Compress - Download logic
-                const bytes = await filesArray[0].arrayBuffer();
-                let name = filesArray[0].name;
-                if(currentTool === "PDF to WORD") name = name.replace(".pdf", ".doc");
-                setupDownload(bytes, name);
+                data = await merged.save();
+                name = "merged_toolkit.pdf";
+            } else {
+                data = await files[0].arrayBuffer();
+                if(activeTool === "PDF to WORD") name = name.replace(".pdf", ".doc");
             }
-            document.getElementById('share-container').style.display = 'block';
+
+            document.getElementById('download-stage').style.display = 'block';
+            document.getElementById('dl-btn').onclick = () => download(data, name, "application/pdf");
+            
+            const txt = encodeURIComponent("Try this free PDF Tool: " + window.location.href);
+            document.getElementById('sw').href = "https://api.whatsapp.com/send?text=" + txt;
+            document.getElementById('st').href = "https://t.me/share/url?url=" + window.location.href;
         } catch (e) {
-            alert("Error processing file. Please try again.");
+            alert("Error processing file. Please try a smaller PDF.");
             location.reload();
         }
     }
 
-    function setupDownload(data, name) {
-        const btn = document.getElementById('main-dl');
-        btn.onclick = () => download(data, name, "application/pdf");
-        
-        const msg = encodeURIComponent("I converted my file using I LOVE PDF TOOLKIT! Check here: " + window.location.href);
-        document.getElementById('wa-link').href = "https://api.whatsapp.com/send?text=" + msg;
-        document.getElementById('tg-link').href = "https://t.me/share/url?url=" + window.location.href + "&text=" + msg;
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link Copied!");
     }
 </script>
 </body>
     </html>
-    
+            
