@@ -7,41 +7,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --main-red: #ff4d4d; --premium-gold: #ffcc00; --dark: #333; --light-bg: #f4f7f6; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light-bg); color: var(--dark); }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light-bg); color: var(--dark); overflow-x: hidden; }
         
-        /* Header */
         header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 20px; font-weight: 800; color: #333; text-decoration: none; display: flex; align-items: center; cursor: pointer; }
         .logo span { color: var(--main-red); margin: 0 4px; }
         .premium-btn { background: var(--premium-gold); padding: 8px 16px; border-radius: 20px; font-weight: bold; border: none; font-size: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); }
 
-        /* Ads */
         .ad-banner { background: #eee; text-align: center; padding: 10px; font-size: 10px; border-bottom: 1px solid #ddd; min-height: 50px; }
 
-        /* Sidebar */
         #sideNav { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; left: 0; background: white; overflow-x: hidden; transition: 0.4s; padding-top: 60px; box-shadow: 5px 0 20px rgba(0,0,0,0.1); }
         .nav-link { padding: 15px 25px; text-decoration: none; font-size: 16px; color: #444; display: block; border-bottom: 1px solid #f9f9f9; }
         .nav-link:hover { background: #fff5f5; color: var(--main-red); }
 
-        /* Dashboard Info */
         .status-bar { background: #fff; padding: 10px 20px; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px solid #eee; font-weight: 600; }
 
-        /* Grid Layout */
         .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; max-width: 900px; margin: auto; }
         .tool-card { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #eee; transition: 0.3s; cursor: pointer; }
         .tool-card:active { transform: scale(0.95); }
         .tool-icon { font-size: 32px; margin-bottom: 8px; display: block; }
         .tool-name { font-weight: 600; font-size: 14px; color: #444; }
 
-        /* Overlay for Conversion */
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 3000; text-align: center; padding-top: 100px; }
-        .timer-circle { font-size: 40px; color: var(--main-red); font-weight: 800; margin: 20px; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 3000; text-align: center; padding-top: 80px; }
+        .timer-circle { font-size: 50px; color: var(--main-red); font-weight: 800; margin: 20px; }
         .ad-box-large { width: 300px; height: 250px; background: #fafafa; border: 1px solid #ddd; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; }
+        
+        #downloadBtn { display: none; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="ad-banner">ADVERTISEMENT - BANNER TOP</div>
+    <div class="ad-banner">ADVERTISEMENT - TOP BANNER</div>
 
     <header>
         <div onclick="toggleNav()" style="font-size:24px; cursor:pointer;">☰</div>
@@ -50,12 +46,11 @@
     </header>
 
     <div id="sideNav">
-        <div onclick="toggleNav()" style="position:absolute; right:20px; top:15px; font-size:24px;">✕</div>
+        <div onclick="toggleNav()" style="position:absolute; right:20px; top:15px; font-size:24px; cursor:pointer;">✕</div>
         <a href="#" class="nav-link">🏠 Home</a>
         <a href="#" class="nav-link" style="color:var(--main-red); font-weight:bold;">🚀 OCR Advanced</a>
         <a href="#" class="nav-link">📱 Mobile Optimizer</a>
         <a href="#" class="nav-link">💎 Pricing & Plans</a>
-        <div class="ad-box-large" style="width:240px; height:150px; margin:20px auto;">Sidebar Ad</div>
     </div>
 
     <div class="status-bar">
@@ -76,77 +71,20 @@
         <div class="tool-card" onclick="openConverter('PDF to JPG')">
             <span class="tool-icon">🖼️</span><div class="tool-name">PDF to JPG</div>
         </div>
-        <div class="ad-box-large" style="grid-column: span 2; width: 100%; height: 100px; margin: 0;">In-Grid Native Ad</div>
-        
-        <div class="tool-card" onclick="openConverter('Edit PDF')">
-            <span class="tool-icon">✏️</span><div class="tool-name">Edit PDF</div>
-        </div>
-        <div class="tool-card" onclick="openConverter('Protect PDF')">
-            <span class="tool-icon">🔒</span><div class="tool-name">Protect PDF</div>
-        </div>
     </div>
 
     <div id="overlay">
         <h2>Converting <span id="toolNameDisplay"></span>...</h2>
         <div class="timer-circle" id="timer">10</div>
-        <p>Please wait while we process your professional file.</p>
-        <div class="ad-box-large">INTERSTITIAL AD (High Revenue)</div>
-        <div id="downloadBtn" style="display:none;">
-            <button class="premium-btn" style="background:#2ecc71; padding:15px 40px; font-size:16px;" onclick="location.reload()">DOWNLOAD FILE</button>
+        <p>Please wait while we process your file.</p>
+        <div class="ad-box-large">CONVERSION AD - 300x250</div>
+        <div id="downloadBtn">
+            <button class="premium-btn" id="finalDownloadLink" style="background:#2ecc71; padding:15px 40px; font-size:16px; color:white;">DOWNLOAD FILE</button>
         </div>
     </div>
 
     <input type="file" id="fileInput" style="display:none;" onchange="handleFile(this)">
 
-    <script>
-        let dailyLimit = 5;
-        let selectedTool = '';
-
-        function toggleNav() {
-            let s = document.getElementById("sideNav");
-            s.style.width = s.style.width === "280px" ? "0" : "280px";
-        }
-
-        function openConverter(tool) {
-            if(dailyLimit <= 0) {
-                alert("Daily Limit Exceeded! Please upgrade to Premium for unlimited access.");
-                return;
-            }
-            selectedTool = tool;
-            document.getElementById('fileInput').click();
-        }
-
-        function handleFile(input) {
-            const file = input.files[0];
-            if(!file) return;
-
-            // 5MB Limit Check
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File size exceeds 5MB! Upgrade to Premium to convert large files.");
-                input.value = '';
-                return;
-            }
-
-            startProcess();
-        }
-
-        function startProcess() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('toolNameDisplay').innerText = selectedTool;
-            let time = 10;
-            let countdown = setInterval(() => {
-                time--;
-                document.getElementById('timer').innerText = time;
-                if(time <= 0) {
-                    clearInterval(countdown);
-                    document.getElementById('timer').style.display = 'none';
-                    document.getElementById('downloadBtn').style.display = 'block';
-                    dailyLimit--;
-                    document.getElementById('count').innerText = dailyLimit;
-                }
-            }, 1000);
-        }
-    </script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-    </html>
-            
+</html>
