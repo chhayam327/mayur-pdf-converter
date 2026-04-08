@@ -1,169 +1,152 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I LOVE PDF TOOLKIT - Pro Editor & Viewer</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-
+    <title>I Love PDF Toolkit | Professional PDF Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --red: #e53935; --dark: #2d2d2d; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f3f6f9; }
-        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 22px; font-weight: 900; cursor: pointer; color: #333; text-decoration: none; }
-        .logo span { color: var(--red); }
-
-        /* Sidebar & Layout */
-        .sidebar { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: white; z-index: 2000; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
-        .sidebar.active { left: 0; }
-        .container { padding: 20px; max-width: 1100px; margin: auto; }
+        :root { --main-red: #ff4d4d; --premium-gold: #ffcc00; --dark: #333; --light-bg: #f4f7f6; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light-bg); color: var(--dark); }
         
-        /* Grid & Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; cursor: pointer; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); border-bottom: 4px solid var(--red); }
-        .card i { font-size: 30px; margin-bottom: 10px; display: block; color: var(--red); }
+        /* Header */
+        header { background: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 20px; font-weight: 800; color: #333; text-decoration: none; display: flex; align-items: center; cursor: pointer; }
+        .logo span { color: var(--main-red); margin: 0 4px; }
+        .premium-btn { background: var(--premium-gold); padding: 8px 16px; border-radius: 20px; font-weight: bold; border: none; font-size: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); }
 
-        /* Internal Viewer & Editor Area */
-        #viewer-container { display: none; background: #525659; padding: 20px; min-height: 100vh; text-align: center; }
-        #pdf-render { background: white; box-shadow: 0 0 20px rgba(0,0,0,0.3); margin: auto; max-width: 100%; }
-        .editor-controls { background: white; padding: 15px; position: sticky; top: 60px; z-index: 900; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; border-bottom: 2px solid var(--red); }
+        /* Ads */
+        .ad-banner { background: #eee; text-align: center; padding: 10px; font-size: 10px; border-bottom: 1px solid #ddd; min-height: 50px; }
 
-        /* Buttons */
-        .btn { background: var(--red); color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-green { background: #43a047; }
-        .input-box { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        /* Sidebar */
+        #sideNav { height: 100%; width: 0; position: fixed; z-index: 2000; top: 0; left: 0; background: white; overflow-x: hidden; transition: 0.4s; padding-top: 60px; box-shadow: 5px 0 20px rgba(0,0,0,0.1); }
+        .nav-link { padding: 15px 25px; text-decoration: none; font-size: 16px; color: #444; display: block; border-bottom: 1px solid #f9f9f9; }
+        .nav-link:hover { background: #fff5f5; color: var(--main-red); }
 
-        #tool-ui { display: none; text-align: center; padding: 40px 20px; }
+        /* Dashboard Info */
+        .status-bar { background: #fff; padding: 10px 20px; display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px solid #eee; font-weight: 600; }
+
+        /* Grid Layout */
+        .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; max-width: 900px; margin: auto; }
+        .tool-card { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #eee; transition: 0.3s; cursor: pointer; }
+        .tool-card:active { transform: scale(0.95); }
+        .tool-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+        .tool-name { font-weight: 600; font-size: 14px; color: #444; }
+
+        /* Overlay for Conversion */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 3000; text-align: center; padding-top: 100px; }
+        .timer-circle { font-size: 40px; color: var(--main-red); font-weight: 800; margin: 20px; }
+        .ad-box-large { width: 300px; height: 250px; background: #fafafa; border: 1px solid #ddd; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #999; }
     </style>
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-    <div style="padding:20px; font-weight:bold; border-bottom:1px solid #eee;">MENU</div>
-    <div onclick="location.reload()" style="padding:15px; cursor:pointer;"><i class="fas fa-home"></i> Dashboard</div>
-    <div onclick="alert('Watermark Tool Activated')" style="padding:15px; cursor:pointer;"><i class="fas fa-stamp"></i> Watermark Settings</div>
-</div>
+    <div class="ad-banner">ADVERTISEMENT - BANNER TOP</div>
 
-<header>
-    <div onclick="document.getElementById('sidebar').classList.toggle('active')" style="cursor:pointer;"><i class="fas fa-bars"></i></div>
-    <a href="#" class="logo">I<span><i class="fas fa-heart"></i>PDF</span>TOOLKIT</a>
-    <div><i class="fas fa-user-circle"></i></div>
-</header>
+    <header>
+        <div onclick="toggleNav()" style="font-size:24px; cursor:pointer;">☰</div>
+        <div class="logo">I<span>❤</span>PDF TOOLKIT</div>
+        <button class="premium-btn">PREMIUM</button>
+    </header>
 
-<div class="container" id="home-view">
-    <div class="grid">
-        <div class="card" onclick="openTool('Merge PDF')"><i class="fas fa-layer-group"></i><h3>Merge PDF</h3></div>
-        <div class="card" onclick="openTool('PDF to Word')"><i class="fas fa-file-word"></i><h3>PDF to Word</h3></div>
-        <div class="card" onclick="openTool('Add Watermark')"><i class="fas fa-stamp"></i><h3>Watermark</h3></div>
-        <div class="card" onclick="openTool('Compress PDF')"><i class="fas fa-compress-arrows-alt"></i><h3>Compress</h3></div>
-        <div class="card" onclick="openTool('PDF to JPG')"><i class="fas fa-file-image"></i><h3>PDF to JPG</h3></div>
-        <div class="card" onclick="openTool('Unlock PDF')"><i class="fas fa-unlock"></i><h3>Unlock</h3></div>
-        <div class="card" onclick="openTool('Protect PDF')"><i class="fas fa-lock"></i><h3>Protect</h3></div>
-        <div class="card" onclick="openTool('Edit PDF')"><i class="fas fa-edit"></i><h3>Edit PDF</h3></div>
+    <div id="sideNav">
+        <div onclick="toggleNav()" style="position:absolute; right:20px; top:15px; font-size:24px;">✕</div>
+        <a href="#" class="nav-link">🏠 Home</a>
+        <a href="#" class="nav-link" style="color:var(--main-red); font-weight:bold;">🚀 OCR Advanced</a>
+        <a href="#" class="nav-link">📱 Mobile Optimizer</a>
+        <a href="#" class="nav-link">💎 Pricing & Plans</a>
+        <div class="ad-box-large" style="width:240px; height:150px; margin:20px auto;">Sidebar Ad</div>
     </div>
-</div>
 
-<div id="tool-ui" class="container">
-    <h2 id="t-title">Tool</h2>
-    <input type="file" id="file-in" hidden multiple onchange="handleFileSelection()">
-    <button class="btn" style="font-size:20px;" onclick="document.getElementById('file-in').click()">Choose Files</button>
-    <div id="convert-section" style="display:none; margin-top:20px;">
-        <p id="f-count"></p>
-        <input type="text" id="watermark-text" placeholder="Enter Watermark Text" class="input-box">
-        <br><br>
-        <button class="btn btn-green" onclick="startProcessing()">Convert & Open in Website</button>
+    <div class="status-bar">
+        <span>DAILY LIMIT: <span id="count">5</span>/5 LEFT</span>
+        <span style="color: var(--main-red);">MAX SIZE: 5MB</span>
     </div>
-</div>
 
-<div id="viewer-container">
-    <div class="editor-controls">
-        <button class="btn" onclick="location.reload()">Back</button>
-        <button class="btn btn-green" id="final-download">Save & Download</button>
-        <span style="color:#333; font-weight:bold; align-self:center;">Preview Mode</span>
-    </div>
-    <canvas id="pdf-render"></canvas>
-    <div style="color:white; margin-top:10px;">Page 1 of <span id="page-count">1</span></div>
-</div>
-
-<script>
-    let activeTool = "";
-    let selectedFiles = [];
-    let currentPdfBytes = null;
-
-    function openTool(name) {
-        activeTool = name;
-        document.getElementById('home-view').style.display = 'none';
-        document.getElementById('tool-ui').style.display = 'block';
-        document.getElementById('t-title').innerText = name;
-    }
-
-    function handleFileSelection() {
-        const f = document.getElementById('file-in').files;
-        if(f.length === 0) return;
-        selectedFiles = Array.from(f);
-        document.getElementById('convert-section').style.display = 'block';
-        document.getElementById('f-count').innerText = f.length + " file(s) selected";
-    }
-
-    async function startProcessing() {
-        const { PDFDocument, rgb, StandardFonts } = PDFLib;
-        try {
-            let pdfDoc;
-            if(activeTool === "Merge PDF" && selectedFiles.length > 1) {
-                pdfDoc = await PDFDocument.create();
-                for(let f of selectedFiles) {
-                    const doc = await PDFDocument.load(await f.arrayBuffer());
-                    const pages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    pages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                pdfDoc = await PDFDocument.load(await selectedFiles[0].arrayBuffer());
-            }
-
-            // Watermark Logic
-            const wText = document.getElementById('watermark-text').value;
-            if(wText) {
-                const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-                const pages = pdfDoc.getPages();
-                pages.forEach(p => {
-                    p.drawText(wText, { x: 50, y: 50, size: 50, font: font, color: rgb(0.7, 0.7, 0.7), opacity: 0.5, rotate: PDFLib.degrees(45) });
-                });
-            }
-
-            currentPdfBytes = await pdfDoc.save();
-            renderInternalPDF(currentPdfBytes);
-
-        } catch (e) {
-            alert("Error: Mobile memory full. Try small file.");
-        }
-    }
-
-    async function renderInternalPDF(data) {
-        document.getElementById('tool-ui').style.display = 'none';
-        document.getElementById('viewer-container').style.display = 'block';
+    <div class="main-grid">
+        <div class="tool-card" onclick="openConverter('PDF to Word')">
+            <span class="tool-icon">📄</span><div class="tool-name">PDF to Word</div>
+        </div>
+        <div class="tool-card" onclick="openConverter('Merge PDF')">
+            <span class="tool-icon">➕</span><div class="tool-name">Merge PDF</div>
+        </div>
+        <div class="tool-card" onclick="openConverter('Compress PDF')">
+            <span class="tool-icon">🤐</span><div class="tool-name">Compress</div>
+        </div>
+        <div class="tool-card" onclick="openConverter('PDF to JPG')">
+            <span class="tool-icon">🖼️</span><div class="tool-name">PDF to JPG</div>
+        </div>
+        <div class="ad-box-large" style="grid-column: span 2; width: 100%; height: 100px; margin: 0;">In-Grid Native Ad</div>
         
-        const loadingTask = pdfjsLib.getDocument({data: data});
-        const pdf = await loadingTask.promise;
-        document.getElementById('page-count').innerText = pdf.numPages;
+        <div class="tool-card" onclick="openConverter('Edit PDF')">
+            <span class="tool-icon">✏️</span><div class="tool-name">Edit PDF</div>
+        </div>
+        <div class="tool-card" onclick="openConverter('Protect PDF')">
+            <span class="tool-icon">🔒</span><div class="tool-name">Protect PDF</div>
+        </div>
+    </div>
 
-        const page = await pdf.getPage(1);
-        const viewport = page.getViewport({scale: 1.5});
-        const canvas = document.getElementById('pdf-render');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+    <div id="overlay">
+        <h2>Converting <span id="toolNameDisplay"></span>...</h2>
+        <div class="timer-circle" id="timer">10</div>
+        <p>Please wait while we process your professional file.</p>
+        <div class="ad-box-large">INTERSTITIAL AD (High Revenue)</div>
+        <div id="downloadBtn" style="display:none;">
+            <button class="premium-btn" style="background:#2ecc71; padding:15px 40px; font-size:16px;" onclick="location.reload()">DOWNLOAD FILE</button>
+        </div>
+    </div>
 
-        await page.render({canvasContext: context, viewport: viewport}).promise;
+    <input type="file" id="fileInput" style="display:none;" onchange="handleFile(this)">
 
-        document.getElementById('final-download').onclick = () => {
-            download(data, "I_LOVE_PDF_Edited.pdf", "application/pdf");
-        };
-    }
-</script>
+    <script>
+        let dailyLimit = 5;
+        let selectedTool = '';
+
+        function toggleNav() {
+            let s = document.getElementById("sideNav");
+            s.style.width = s.style.width === "280px" ? "0" : "280px";
+        }
+
+        function openConverter(tool) {
+            if(dailyLimit <= 0) {
+                alert("Daily Limit Exceeded! Please upgrade to Premium for unlimited access.");
+                return;
+            }
+            selectedTool = tool;
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFile(input) {
+            const file = input.files[0];
+            if(!file) return;
+
+            // 5MB Limit Check
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size exceeds 5MB! Upgrade to Premium to convert large files.");
+                input.value = '';
+                return;
+            }
+
+            startProcess();
+        }
+
+        function startProcess() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('toolNameDisplay').innerText = selectedTool;
+            let time = 10;
+            let countdown = setInterval(() => {
+                time--;
+                document.getElementById('timer').innerText = time;
+                if(time <= 0) {
+                    clearInterval(countdown);
+                    document.getElementById('timer').style.display = 'none';
+                    document.getElementById('downloadBtn').style.display = 'block';
+                    dailyLimit--;
+                    document.getElementById('count').innerText = dailyLimit;
+                }
+            }, 1000);
+        }
+    </script>
 </body>
-                                                                                                           </html>
+    </html>
             
