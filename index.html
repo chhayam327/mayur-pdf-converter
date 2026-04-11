@@ -1,64 +1,66 @@
-Function toggleAdmin() {
-            isOwner = !isOwner;
-            document.querySelector('.admin-btn').innerText = isOwner ? "Admin: ON (Free)" : "Admin: OFF";
-            alert(isOwner ? "Owner Mode On: No Ads for you!" : "Owner Mode Off");
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick OCR - Image to Text</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; text-align: center; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        #upload { margin: 20px 0; }
+        #output { width: 100%; height: 200px; margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: none; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn:disabled { background: #ccc; }
+        #status { margin-top: 10px; font-size: 14px; color: #555; }
+    </style>
+</head>
+<body>
 
-        function openTool(tool, isPremium = false) {
-            selectedTool = tool;
-            isPremiumTool = isPremium;
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('featureScreen').style.display = 'block';
-            document.getElementById('toolTitle').innerText = tool.toUpperCase().replace('_', ' ');
-        }
+<div class="container">
+    <h2>Office Help OCR Tool</h2>
+    <p>Image select karein aur text nikaalein</p>
+    
+    <input type="file" id="upload" accept="image/*">
+    <br>
+    <button class="btn" id="start-btn">Convert to Text</button>
+    
+    <div id="status">Taiyaar...</div>
+    
+    <textarea id="output" placeholder="Aapka text yahan dikhega..."></textarea>
+    <br>
+    <button class="btn" onclick="copyText()">Copy Text</button>
+</div>
 
-        function startProcess() {
-            const file = document.getElementById('fileInput').files[0];
-            if(!file) return alert("Bhai, file select karo!");
+<script>
+    const upload = document.getElementById('upload');
+    const startBtn = document.getElementById('start-btn');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
 
-            // Check if user is owner
-            if(isOwner) {
-                alert("Owner detected! File converted instantly (No ads).");
-                return;
-            }
+    startBtn.onclick = async () => {
+        const file = upload.files[0];
+        if (!file) return alert("Pehle image select karein!");
 
-            // Usage/Premium logic
-            usageCount++;
-            if(usageCount > 3 || file.size > 5000000) { // More than 3 times or 5MB
-                alert("⭐ Limit Reached! Badi PDF ya zyada use ke liye Premium lein.");
-                return;
-            }
+        status.innerText = "Processing... Thoda intezar karein";
+        startBtn.disabled = true;
 
-            // Decide timer based on tool usefulness
-            let waitTime = (selectedTool === 'word' || selectedTool === 'jpg' || selectedTool === 'watermark') ? 10 : 300; // 300s = 5 min
-            
-            showAd(waitTime);
-        }
+        const { data: { text } } = await Tesseract.recognize(file, 'eng+hin', {
+            logger: m => { if(m.status === 'recognizing text') status.innerText = `Padh raha hoon: ${Math.round(m.progress * 100)}%`; }
+        });
 
-        function showAd(seconds) {
-            const modal = document.getElementById('adModal');
-            const timerEl = document.getElementById('timer');
-            const statusEl = document.getElementById('adStatus');
-            
-            modal.style.display = 'flex';
-            let timeLeft = seconds;
-            timerEl.innerText = timeLeft;
+        output.value = text;
+        status.innerText = "Kaam pura ho gaya!";
+        startBtn.disabled = false;
+    };
 
-            if(seconds > 60) {
-                statusEl.innerText = "Heavy file detected. Deep scanning in progress (5 min)...";
-            }
+    function copyText() {
+        output.select();
+        document.execCommand('copy');
+        alert("Text copy ho gaya!");
+    }
+</script>
 
-            const countdown = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = timeLeft;
-                if(timeLeft <= 0) {
-                    clearInterval(countdown);
-                    modal.style.display = 'none';
-                    alert("Processing complete! Ad revenue generated.");
-                }
-            }, 1000);
-        }
-    </script>
 </body>
-                </html>
-            
+</html>
