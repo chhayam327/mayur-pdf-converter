@@ -1,66 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick OCR - Image to Text</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <style>
-        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; text-align: center; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: #333; }
-        #upload { margin: 20px 0; }
-        #output { width: 100%; height: 200px; margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: none; }
-        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn:disabled { background: #ccc; }
-        #status { margin-top: 10px; font-size: 14px; color: #555; }
-    </style>
-</head>
-<body>
+<script src="https://cdn.tailwindcss.com"></script>
+<body class="bg-[#0b0e14] text-white font-sans">
 
-<div class="container">
-    <h2>Office Help OCR Tool</h2>
-    <p>Image select karein aur text nikaalein</p>
+    <div class="p-4 flex justify-between items-center border-b border-gray-800">
+        <span class="text-purple-500 font-bold text-lg italic">Mayur Team</span>
+        <button onclick="openPremium()" class="bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-1 rounded-full text-xs font-bold">PREMIUM</button>
+    </div>
+
+    <div class="p-4 grid grid-cols-2 gap-4">
+        <div onclick="document.getElementById('pdfFile').click()" class="bg-[#1a1f29] p-6 rounded-2xl text-center border border-purple-900/50">
+            <div class="text-blue-500 text-3xl mb-2">📄➡️W</div>
+            <p class="text-sm font-bold">PDF to WORD</p>
+            <input type="file" id="pdfFile" class="hidden" onchange="uploadFile()">
+        </div>
+        <div class="bg-[#1a1f29] p-6 rounded-2xl text-center border border-gray-800">
+            <div class="text-green-500 text-3xl mb-2">📊</div>
+            <p class="text-sm font-bold">Simple Excel</p>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 w-full bg-[#0b0e14] flex justify-around p-4 border-t border-gray-800">
+        <button class="text-gray-500">Recent</button>
+        <button class="text-blue-500 font-bold">Discover</button>
+        <button class="text-gray-500">Premium</button>
+    </div>
+
+    <div id="payModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center p-6">
+        <div class="bg-white text-black p-6 rounded-3xl w-full text-center">
+            <h2 class="font-bold text-xl mb-2">Upgrade to Premium</h2>
+            <p class="text-sm text-gray-600 mb-4">Daily 6 limit se chhutkara paayein</p>
+            
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7066300414@ybl&pn=Mayur&am=99&cu=INR" class="mx-auto w-48 mb-4 border-4 border-gray-100 p-2">
+            
+            <p class="font-bold text-sm">UPI ID: 7066300414@ybl</p>
+            
+            <div id="timerBox" class="hidden mt-4 p-3 bg-yellow-100 rounded-lg">
+                <p class="text-xs">Verifying Payment... <span id="timer" class="font-bold">60</span>s</p>
+            </div>
+
+            <button onclick="startTimer()" class="mt-6 bg-black text-white w-full py-3 rounded-xl font-bold">I Have Paid</button>
+            <button onclick="closePremium()" class="mt-2 text-gray-400 text-xs">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function openPremium() { document.getElementById('payModal').classList.remove('hidden'); }
+        function closePremium() { document.getElementById('payModal').classList.add('hidden'); }
+
+        function startTimer() {
+            document.getElementById('timerBox').classList.remove('hidden');
+            let sec = 60;
+            let countdown = setInterval(() => {
+                sec--;
+                document.getElementById('timer').innerText = sec;
+                if (sec <= 0) {
+                    clearInterval(countdown);
+                    alert("System busy. Please send screenshot to 7066300414 for manual activation.");
+                }
+            }, 1000);
+        }
+
+        function uploadFile() {
+            alert("PDF to Word conversion started... Please wait.");
+            // Backend URL yahan connect hogi
+        }
+    </script>
+                </body>
     
-    <input type="file" id="upload" accept="image/*">
-    <br>
-    <button class="btn" id="start-btn">Convert to Text</button>
-    
-    <div id="status">Taiyaar...</div>
-    
-    <textarea id="output" placeholder="Aapka text yahan dikhega..."></textarea>
-    <br>
-    <button class="btn" onclick="copyText()">Copy Text</button>
-</div>
-
-<script>
-    const upload = document.getElementById('upload');
-    const startBtn = document.getElementById('start-btn');
-    const output = document.getElementById('output');
-    const status = document.getElementById('status');
-
-    startBtn.onclick = async () => {
-        const file = upload.files[0];
-        if (!file) return alert("Pehle image select karein!");
-
-        status.innerText = "Processing... Thoda intezar karein";
-        startBtn.disabled = true;
-
-        const { data: { text } } = await Tesseract.recognize(file, 'eng+hin', {
-            logger: m => { if(m.status === 'recognizing text') status.innerText = `Padh raha hoon: ${Math.round(m.progress * 100)}%`; }
-        });
-
-        output.value = text;
-        status.innerText = "Kaam pura ho gaya!";
-        startBtn.disabled = false;
-    };
-
-    function copyText() {
-        output.select();
-        document.execCommand('copy');
-        alert("Text copy ho gaya!");
-    }
-</script>
-
-</body>
-</html>
