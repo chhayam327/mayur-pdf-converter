@@ -178,7 +178,87 @@
             document.getElementById('fullAdOverlay').style.display = 'none';
             alert("✅ Done! Your file is ready for download.");
         }
-    </script>
+    <script>
+    // 1. Page Switching Logic (Slide karne ke liye)
+    function setPage(index) {
+        document.getElementById('slider').style.transform = `translateX(-${index * 100}vw)`;
+        
+        // Navigation buttons ka color update karne ke liye
+        for(let i=0; i<3; i++) {
+            const nav = document.getElementById('nav'+i);
+            nav.classList.remove('active', 'text-purple-500');
+            nav.classList.add('text-gray-600');
+        }
+        document.getElementById('nav'+index).classList.add('active', 'text-purple-500');
+    }
+
+    // 2. Sidebar Menu Logic
+    function openMenu() { document.getElementById('sidebar').style.left = '0'; }
+    function closeMenu() { document.getElementById('sidebar').style.left = '-280px'; }
+
+    // 3. Conversion + Full Screen Ad Logic
+    async function runConversion(toolName) {
+        let fileInput = document.getElementById('pdfInput');
+        
+        // Check agar file select ki hai ya nahi
+        if (!fileInput.files[0]) {
+            alert("Bhai, pehle PDF file toh select karo!");
+            return;
+        }
+
+        // Ad Overlay dikhana
+        document.getElementById('fullAdOverlay').style.display = 'flex';
+        let timeLeft = 10; // 10 second ki lambi add
+        
+        const timer = setInterval(async () => {
+            timeLeft--;
+            document.getElementById('adTimer').innerText = `Processing... Add khatam hogi ${timeLeft}s mein`;
+            
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                
+                // Backend (Python) ko file bhejna
+                let formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                try {
+                    // Yahan 'localhost' ki jagah aap apna server IP bhi daal sakte hain
+                    const response = await fetch('http://127.0.0.1:5000/convert', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = "Converted_By_Mayur.docx"; // Direct Word File Name
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        
+                        document.getElementById('fullAdOverlay').style.display = 'none';
+                        alert("✅ Kaam ho gaya! Word file download ho rahi hai.");
+                    } else {
+                        alert("Server Error: Shayad backend band hai.");
+                        document.getElementById('fullAdOverlay').style.display = 'none';
+                    }
+                } catch (error) {
+                    alert("Backend se connection nahi ho pa raha!");
+                    document.getElementById('fullAdOverlay').style.display = 'none';
+                }
+            }
+        }, 1000);
+    }
+
+    // 4. Skip Ad Button Function
+    function finishConversion() {
+        // Agar user skip dabaye toh ad band ho jaye (par file tabhi milegi jab backend ready ho)
+        document.getElementById('fullAdOverlay').style.display = 'none';
+    }
+</script>
+    
 </body>
                 </html>
     
