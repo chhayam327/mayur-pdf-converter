@@ -5,220 +5,273 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I ❤️ PDF TOOLKIT</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
         :root {
-            --bg-dark: radial-gradient(circle at top, #4a0404 0%, #1a0101 100%);
-            --bg-light: #e2e2e7;
-            --card-dark: rgba(255, 255, 255, 0.05);
-            --card-light: #ffffff;
-            --text-dark: #ffffff;
-            --text-light: #1a1a1a;
+            --red-glow: #ff4d4d;
         }
 
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease;
-            min-height: 100vh;
-            padding-bottom: 80px;
+            margin: 0; font-family: 'Inter', sans-serif; transition: 0.5s;
+            min-height: 100vh; overflow-x: hidden; color: white;
+            background: #000;
         }
 
-        body.dark-mode {
-            background: var(--bg-dark) fixed;
-            color: var(--text-dark);
+        /* Fully Animated 3D Mesh Background */
+        .animated-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #1a0101, #4a0404, #000, #300101);
+            background-size: 400% 400%;
+            z-index: -1;
+            animation: meshGradient 15s ease infinite;
+        }
+        @keyframes meshGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        body.light-mode {
-            background: var(--bg-light);
-            color: var(--text-light);
-        }
-
+        /* Glassmorphism Cards */
         .glass-card {
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.06); }
+
+        /* 3D Icon Animation */
+        .icon-3d {
+            transition: transform 0.5s;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 5px rgba(255,77,77,0.2)); }
+            50% { transform: translateY(-8px) rotate(3deg); filter: drop-shadow(0 0 15px rgba(255,77,77,0.5)); }
         }
 
-        .dark-mode .glass-card { background: var(--card-dark); backdrop-filter: blur(10px); }
-        .light-mode .glass-card { background: var(--card-light); border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* Sidebar */
+        #sidebar {
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100%;
+            background: #fff; z-index: 2000; transition: 0.4s; color: #000;
+            display: flex; flex-direction: column;
+        }
+        #sidebar.active { left: 0; }
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 1500; display: none;
+        }
 
-        /* Navigation Fix */
+        /* Ad Slots */
+        .ad-slot {
+            background: rgba(255,255,255,0.05); border-radius: 12px;
+            text-align: center; color: rgba(255,255,255,0.3);
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            margin: 15px 0; padding: 10px; border: 1px dashed rgba(255,255,255,0.1);
+        }
+
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+            background: rgba(10, 0, 0, 0.85); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
         }
-        .dark-mode .bottom-nav { background: rgba(20, 0, 0, 0.95); }
-        .light-mode .bottom-nav { background: #ffffff; border-top: 1px solid #ddd; }
 
-        .nav-item { text-align: center; font-size: 11px; color: #888; cursor: pointer; }
-        .nav-item.active { color: #ff4d4d; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 2px; }
-
-        /* Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #444;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px; width: 20px;
-            left: 3px; bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider { background-color: #ff4d4d; }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        .hidden { display: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <header class="flex justify-between items-center p-5">
-        <div class="flex items-center gap-2">
-            <i class="fa-solid fa-bars text-xl"></i>
-            <span class="font-bold text-lg">I <span class="text-red-500">❤️</span> PDF TOOLKIT</span>
+    <div class="animated-bg"></div>
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar" class="p-6">
+        <div class="flex justify-between items-center mb-8">
+            <span class="font-extrabold text-xl">I <span class="text-red-500">❤️</span> PDF TOOLKIT</span>
+            <i class="fa-solid fa-xmark text-2xl" onclick="toggleSidebar()"></i>
         </div>
-        <button class="border border-red-500/30 rounded-full px-4 py-1 flex items-center gap-2">
-            <i class="fa-solid fa-right-to-bracket text-sm"></i>
+        <div class="flex-1 space-y-4">
+            <div class="flex items-center gap-4 bg-red-50 p-4 rounded-2xl text-red-600 font-bold"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="flex items-center gap-4 p-4 hover:bg-gray-100 rounded-2xl"><i class="fa-solid fa-clock"></i> Recent</div>
+            <div class="flex items-center gap-4 p-4 hover:bg-gray-100 rounded-2xl"><i class="fa-solid fa-gear"></i> Settings</div>
+            <div class="flex items-center gap-4 p-4 hover:bg-gray-100 rounded-2xl text-yellow-600"><i class="fa-solid fa-crown"></i> Premium <span class="ml-auto bg-red-500 text-white text-[10px] px-2 py-1 rounded-md">PRO</span></div>
+        </div>
+        <div class="bg-gray-100 p-4 rounded-2xl text-center text-[10px] text-gray-400 border-2 border-dashed border-gray-200">
+            ADVERTISEMENT<br><br>SQUARE AD SLOT
+        </div>
+    </div>
+
+    <header class="flex justify-between items-center p-6 sticky top-0 z-50">
+        <i class="fa-solid fa-bars-staggered text-2xl cursor-pointer" onclick="toggleSidebar()"></i>
+        <div class="font-extrabold text-xl tracking-tighter">I <span class="text-red-500">❤️</span> PDF TOOLKIT</div>
+        <button class="w-10 h-10 border border-white/20 rounded-2xl flex items-center justify-center bg-white/5">
+            <i class="fa-solid fa-right-to-bracket"></i>
         </button>
     </header>
 
-    <div id="home-page" class="px-5">
-        <h1 class="text-4xl font-bold mt-4 leading-tight">Professional PDF Tools, <span class="text-red-500">Simplified.</span></h1>
-        <p class="opacity-60 text-sm mt-3">Every tool you need to work with PDFs in one place...</p>
-        
-        <div class="flex gap-2 overflow-x-auto mt-6 no-scrollbar pb-2">
-            <span class="bg-black text-white px-5 py-2 rounded-full text-sm">All</span>
-            <span class="bg-gray-500/20 px-5 py-2 rounded-full text-sm">Organize</span>
-            <span class="bg-gray-500/20 px-5 py-2 rounded-full text-sm">Optimize</span>
-        </div>
+    <div id="app-container" class="px-6">
+        <div id="home-view">
+            <h1 class="text-5xl font-black mt-6 leading-[1.1]">Professional PDF Tools, <span class="text-red-500">Simplified.</span></h1>
+            <p class="text-gray-400 mt-5 text-sm leading-relaxed">Every tool you need to work with PDFs in one place — 100% free and easy to use.</p>
 
-        <div class="mt-8">
-            <div class="glass-card flex items-center gap-4">
-                <div class="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center">
-                    <i class="fa-solid fa-layer-group text-orange-500"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold">Merge PDF</h3>
-                    <p class="text-xs opacity-50">Combine PDFs in the order you want.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="recent-page" class="px-5 hidden text-center mt-20">
-        <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i class="fa-regular fa-clock text-red-500 text-2xl"></i>
-        </div>
-        <h2 class="text-2xl font-bold">No recent activity yet</h2>
-        <p class="opacity-50 mt-2 text-sm">Your recently processed files will appear here.</p>
-    </div>
-
-    <div id="settings-page" class="px-5 hidden">
-        <div class="glass-card mt-5">
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center">
-                    <i class="fa-solid fa-gear text-red-500"></i>
-                </div>
-                <h2 class="text-2xl font-bold">Settings</h2>
+            <div class="flex gap-3 overflow-x-auto mt-8 no-scrollbar pb-2">
+                <button class="bg-white text-black px-8 py-2.5 rounded-full font-bold shadow-lg">All</button>
+                <button class="bg-white/10 px-8 py-2.5 rounded-full border border-white/5">Organize</button>
+                <button class="bg-white/10 px-8 py-2.5 rounded-full border border-white/5">Optimize</button>
+                <button class="bg-white/10 px-8 py-2.5 rounded-full border border-white/5">Convert</button>
             </div>
 
-            <div class="bg-black/20 light-mode:bg-gray-100 p-4 rounded-3xl flex justify-between items-center mb-6">
-                <div class="flex items-center gap-3">
-                    <i class="fa-regular fa-moon text-xl"></i>
-                    <div>
-                        <p class="font-semibold text-sm">Appearance</p>
-                        <p class="text-xs opacity-50">Dark mode</p>
+            <div class="ad-slot">Sponsored Advertisement - 468 x 60</div>
+
+            <div id="tools-grid" class="mt-4 space-y-4 pb-28">
+                </div>
+        </div>
+
+        <div id="tool-view" class="hidden py-8">
+            <button onclick="showView('home-view')" class="text-gray-500 mb-8 flex items-center gap-2"><i class="fa-solid fa-arrow-left"></i> Back to all tools</button>
+            <div class="text-center">
+                <h2 id="current-tool-title" class="text-4xl font-extrabold mb-8">Merge PDF</h2>
+                <div class="glass-card p-12 border-dashed border-2 border-red-500/30 relative">
+                    <div class="w-24 h-24 bg-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6 icon-3d shadow-2xl shadow-red-500/30">
+                        <i class="fa-solid fa-cloud-arrow-up text-white text-4xl"></i>
                     </div>
+                    <p class="text-xl font-bold">Drag & drop files here</p>
+                    <p class="text-gray-500 text-sm mt-2">or tap to browse from your device</p>
+                    <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="startProcessing()">
                 </div>
-                <label class="switch">
-                    <input type="checkbox" id="theme-toggle" checked onchange="toggleTheme()">
-                    <span class="slider"></span>
-                </label>
+                <div class="ad-slot mt-10">Sponsored Advertisement</div>
+                <button class="w-full bg-red-500 py-6 rounded-[30px] mt-8 font-black text-xl shadow-xl shadow-red-500/40 active:scale-95 transition-transform">SELECT FILES</button>
             </div>
+        </div>
 
-            <div class="space-y-6 px-2">
-                <div class="flex justify-between items-center opacity-80">
-                    <span>Account</span> <i class="fa-solid fa-chevron-right text-xs"></i>
-                </div>
-                <hr class="opacity-10">
-                <div class="flex justify-between items-center opacity-80">
-                    <span>Notifications</span> <i class="fa-solid fa-chevron-right text-xs"></i>
-                </div>
-                <hr class="opacity-10">
-                <div class="flex justify-between items-center opacity-80">
-                    <span>Privacy</span> <i class="fa-solid fa-chevron-right text-xs"></i>
-                </div>
-                <hr class="opacity-10">
-                <div class="flex justify-between items-center opacity-80">
-                    <span>About</span> <i class="fa-solid fa-chevron-right text-xs"></i>
-                </div>
+        <div id="processing-view" class="hidden text-center py-20">
+            <div class="relative inline-block">
+                <svg width="150" height="150" class="transform -rotate-90">
+                    <circle cx="75" cy="75" r="65" stroke="rgba(255,255,255,0.05)" stroke-width="12" fill="transparent"/>
+                    <circle id="progress-circle" cx="75" cy="75" r="65" stroke="#ff4d4d" stroke-width="12" fill="transparent" stroke-dasharray="408.4" stroke-dashoffset="408.4" style="transition: stroke-dashoffset 1s linear;"/>
+                </svg>
+                <div id="timer-count" class="absolute inset-0 flex items-center justify-center text-3xl font-black">10s</div>
             </div>
+            <h2 class="text-3xl font-extrabold mt-12">Processing your file...</h2>
+            <p class="text-gray-500 mt-3">Ad ends in <span id="ad-timer">10</span>s</p>
+            <div class="ad-slot mt-10 h-40 flex items-center justify-center">300 x 300 AD SLOT</div>
+        </div>
+
+        <div id="download-view" class="hidden text-center py-12">
+            <div class="ad-slot mb-8">468 x 60 AD SLOT</div>
+            <div class="w-28 h-28 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                <i class="fa-solid fa-check text-white text-5xl"></i>
+            </div>
+            <h2 class="text-4xl font-black">Your file is ready! 🎉</h2>
+            <p class="text-gray-500 mt-4 px-6">Your PDF has been processed successfully and is ready for download.</p>
+            
+            <button class="w-full bg-red-500 py-6 rounded-[30px] mt-12 font-black text-xl shadow-2xl shadow-red-500/40 flex items-center justify-center gap-4">
+                <i class="fa-solid fa-download"></i> DOWNLOAD NOW
+            </button>
+            <button onclick="showView('home-view')" class="mt-8 text-gray-500 underline">Process another file</button>
+            <div class="ad-slot mt-12">468 x 60 AD SLOT</div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showPage('home')">
-            <i class="fa-solid fa-house"></i> Home
-        </div>
-        <div class="nav-item" onclick="showPage('recent')">
-            <i class="fa-solid fa-clock-rotate-left"></i> Recent
-        </div>
-        <div class="nav-item" onclick="showPage('settings')">
-            <i class="fa-solid fa-gear"></i> Settings
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-crown"></i> Premium
-        </div>
+        <div class="text-red-500 flex flex-col items-center"><i class="fa-solid fa-house-chimney text-2xl"></i><span class="text-[10px] mt-1 font-bold">Home</span></div>
+        <div class="text-gray-500 flex flex-col items-center"><i class="fa-solid fa-clock-rotate-left text-2xl"></i><span class="text-[10px] mt-1">Recent</span></div>
+        <div class="text-gray-500 flex flex-col items-center" onclick="showView('settings')"><i class="fa-solid fa-sliders text-2xl"></i><span class="text-[10px] mt-1">Settings</span></div>
+        <div class="text-gray-500 flex flex-col items-center"><i class="fa-solid fa-crown text-2xl"></i><span class="text-[10px] mt-1">Premium</span></div>
     </nav>
 
     <script>
-        function showPage(pageId) {
-            document.querySelectorAll('#home-page, #recent-page, #settings-page').forEach(p => p.classList.add('hidden'));
-            document.getElementById(pageId + '-page').classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+        const toolsData = [
+            { id: 1, name: "Merge PDF", icon: "fa-layer-group", col: "#f97316", desc: "Combine PDFs in the order you want." },
+            { id: 2, name: "Split PDF", icon: "fa-scissors", col: "#ef4444", desc: "Separate one page or a whole set." },
+            { id: 3, name: "Compress PDF", icon: "fa-compress", col: "#22c55e", desc: "Reduce file size without losing quality." },
+            { id: 4, name: "PDF to Word", icon: "fa-file-word", col: "#3b82f6", desc: "Convert PDF to editable DOCX." },
+            { id: 5, name: "PDF to PowerPoint", icon: "fa-file-powerpoint", col: "#eab308", desc: "Turn PDF into PPTX slides." },
+            { id: 6, name: "PDF to Excel", icon: "fa-file-excel", col: "#10b981", desc: "Extract PDF tables to Excel." },
+            { id: 7, name: "Word to PDF", icon: "fa-file-pdf", col: "#2563eb", desc: "DOCX to PDF conversion." },
+            { id: 8, name: "Edit PDF", icon: "fa-pen-nib", col: "#a855f7", desc: "Add text and images to PDF." },
+            { id: 9, name: "PDF to JPG", icon: "fa-image", col: "#facc15", desc: "Extract images from PDF." },
+            { id: 10, name: "Sign PDF", icon: "fa-signature", col: "#6366f1", desc: "Sign documents digitally." },
+            { id: 11, name: "Protect PDF", icon: "fa-lock", col: "#14b8a6", desc: "Add password to your PDF." },
+            { id: 12, name: "Unlock PDF", icon: "fa-unlock", col: "#ec4899", desc: "Remove PDF passwords." },
+            { id: 13, name: "HTML to PDF", icon: "fa-code", col: "#0ea5e9", desc: "Webpage to PDF converter." },
+            { id: 14, name: "Rotate PDF", icon: "fa-rotate", col: "#f43f5e", desc: "Rotate PDF pages easily." },
+            { id: 15, name: "Watermark", icon: "fa-stamp", col: "#fb923c", desc: "Add stamps to PDF pages." },
+            { id: 16, name: "AI Summarizer", icon: "fa-wand-magic-sparkles", col: "#8b5cf6", desc: "AI-powered PDF summaries." },
+            { id: 17, name: "OCR PDF", icon: "fa-magnifying-glass", col: "#06b6d4", desc: "Make scanned PDF searchable." },
+            { id: 18, name: "Repair PDF", icon: "fa-wrench", col: "#f59e0b", desc: "Fix damaged PDF files." },
+            { id: 19, name: "Page Numbers", icon: "fa-list-ol", col: "#64748b", desc: "Add page numbering." },
+            { id: 20, name: "Scan to PDF", icon: "fa-camera", col: "#0284c7", desc: "Convert photos to PDF." }
+        ];
+
+        function renderTools() {
+            const grid = document.getElementById('tools-grid');
+            toolsData.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-6 flex items-center gap-5 cursor-pointer";
+                card.onclick = () => openTool(tool.name);
+                card.innerHTML = `
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center icon-3d shadow-lg" style="background: ${tool.col}20">
+                        <i class="fa-solid ${tool.icon} text-2xl" style="color: ${tool.col}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg leading-tight">${tool.name}</h3>
+                        <p class="text-gray-500 text-xs mt-1">${tool.desc}</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            if (document.getElementById('theme-toggle').checked) {
-                body.classList.remove('light-mode');
-                body.classList.add('dark-mode');
-            } else {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-            }
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('overlay');
+            sb.classList.toggle('active');
+            ov.style.display = sb.classList.contains('active') ? 'block' : 'none';
         }
+
+        function showView(viewId) {
+            ['home-view', 'tool-view', 'processing-view', 'download-view'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function openTool(name) {
+            document.getElementById('current-tool-title').innerText = name;
+            showView('tool-view');
+        }
+
+        function startProcessing() {
+            showView('processing-view');
+            let timeLeft = 10;
+            const circle = document.getElementById('progress-circle');
+            const timerText = document.getElementById('timer-count');
+            const adTimer = document.getElementById('ad-timer');
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerText.innerText = timeLeft + 's';
+                adTimer.innerText = timeLeft;
+                const offset = 408.4 - (408.4 * (10 - timeLeft) / 10);
+                circle.style.strokeDashoffset = offset;
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    showView('download-view');
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff4d4d', '#ffffff'] });
+                }
+            }, 1000);
+        }
+
+        window.onload = renderTools;
     </script>
 </body>
-      </html>
-          
+    </html>
+                        
