@@ -765,103 +765,189 @@ function toggleSidebar() {
   sb.classList.toggle('active');
   document.getElementById('overlay').style.display = sb.classList.contains('active') ? 'block' : 'none';
 }
-
+<script>
 function toggleMode() {
-  document.body.className = document.getElementById('mode-toggle').checked ? 'dark-mode' : 'light-mode';
-// 🔥 BACKEND CONNECTION - Aapka Live Link
-const BACKEND_URL = 'https://pdf-toolkit-backend-kw6t.onrender.com';
+  document.body.className =
+    document.getElementById('mode-toggle').checked
+      ? 'dark-mode'
+      : 'light-mode';
+}
+
+// BACKEND URL
+const BACKEND_URL = 'https://pdf-toolkit-backend-kw6f.onrender.com';
 
 const toolEndpoints = {
-  "Merge PDF": "/api/pdf/merge", "Split PDF": "/api/pdf/split",
-  "Compress PDF": "/api/pdf/compress", "PDF to Word": "/api/pdf/pdf-to-word",
-  "Word to PDF": "/api/pdf/word-to-pdf", "PDF to JPG": "/api/pdf/pdf-to-jpg",
-  "JPG to PDF": "/api/pdf/jpg-to-pdf", "PDF to Excel": "/api/pdf/pdf-to-excel",
-  "PDF to PPT": "/api/pdf/pdf-to-ppt", "Sign PDF": "/api/pdf/sign",
-  "Edit PDF": "/api/pdf/edit", "Watermark PDF": "/api/pdf/watermark",
-  "Rotate PDF": "/api/pdf/rotate", "Page Numbers": "/api/pdf/page-numbers",
-  "Protect PDF": "/api/pdf/protect", "Unlock PDF": "/api/pdf/unlock",
-  "OCR PDF": "/api/pdf/ocr", "Repair PDF": "/api/pdf/repair",
-  "Scan to PDF": "/api/pdf/scan-to-pdf", "HTML to PDF": "/api/pdf/html-to-pdf",
-  "Crop PDF": "/api/pdf/crop", "Organize PDF": "/api/pdf/organize"
+  "Merge PDF": "/api/pdf/merge",
+  "Split PDF": "/api/pdf/split",
+  "Compress PDF": "/api/pdf/compress",
+  "PDF to Word": "/api/pdf/pdf-to-word",
+  "Word to PDF": "/api/pdf/word-to-pdf",
+  "PDF to JPG": "/api/pdf/pdf-to-jpg",
+  "JPG to PDF": "/api/pdf/jpg-to-pdf",
+  "PDF to Excel": "/api/pdf/pdf-to-excel",
+  "PDF to PPT": "/api/pdf/pdf-to-ppt",
+  "Sign PDF": "/api/pdf/sign",
+  "Edit PDF": "/api/pdf/edit",
+  "Watermark PDF": "/api/pdf/watermark",
+  "Rotate PDF": "/api/pdf/rotate",
+  "Page Numbers": "/api/pdf/page-numbers",
+  "Protect PDF": "/api/pdf/protect",
+  "Unlock PDF": "/api/pdf/unlock",
+  "OCR PDF": "/api/pdf/ocr",
+  "Repair PDF": "/api/pdf/repair",
+  "Scan to PDF": "/api/pdf/scan-to-pdf",
+  "HTML to PDF": "/api/pdf/html-to-pdf",
+  "Crop PDF": "/api/pdf/crop",
+  "Organize PDF": "/api/pdf/organize"
 };
 
 let currentTool = null;
 let downloadBlob = null;
 
 const originalOpenTool = openTool;
+
 openTool = function(t) {
   currentTool = t;
   originalOpenTool(t);
 };
 
 async function startProcess(event) {
+
   const fileInput = event?.target;
   const files = fileInput?.files;
+
   if (!files || files.length === 0) return;
-  
+
   showView('process-view');
-  let time = 30; 
+
+  let time = 30;
+
   const ring = document.getElementById('p-circle');
   const txt = document.getElementById('timer');
+
   txt.innerText = 'Uploading...';
-  
+
   const interval = setInterval(() => {
+
     time--;
-    if (time > 0) txt.innerText = time + 's';
-    ring.style.strokeDashoffset = 439.8 - (439.8 * (30 - time) / 30);
+
+    if (time > 0) {
+      txt.innerText = time + 's';
+    }
+
+    ring.style.strokeDashoffset =
+      439.8 - (439.8 * (30 - time) / 30);
+
   }, 1000);
-  
+
   try {
-    const endpoint = toolEndpoints[currentTool?.n] || '/api/pdf/merge';
+
+    const endpoint =
+      toolEndpoints[currentTool?.n] || '/api/pdf/merge';
+
     const formData = new FormData();
-    const multiFile = ['Merge PDF', 'JPG to PDF', 'Scan to PDF'];
+
+    const multiFile = [
+      'Merge PDF',
+      'JPG to PDF',
+      'Scan to PDF'
+    ];
+
     if (multiFile.includes(currentTool?.n)) {
-      for (let f of files) formData.append('files', f);
+
+      for (let f of files) {
+        formData.append('files', f);
+      }
+
     } else {
+
       formData.append('file', files[0]);
+
     }
-    
-    const response = await fetch(BACKEND_URL + endpoint, { method: 'POST', body: formData });
+
+    const response = await fetch(
+      BACKEND_URL + endpoint,
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
+
     clearInterval(interval);
-    if (!response.ok) throw new Error('Processing Failed');
-    
+
+    if (!response.ok) {
+      throw new Error('Processing Failed');
+    }
+
     downloadBlob = await response.blob();
-    const disposition = response.headers.get('Content-Disposition');
+
+    const disposition =
+      response.headers.get('Content-Disposition');
+
     let filename = 'processed.pdf';
+
     if (disposition) {
-      const match = disposition.match(/filename=(.+)/);
-      if (match) filename = match[1].replace(/"/g, '');
+
+      const match =
+        disposition.match(/filename=(.+)/);
+
+      if (match) {
+        filename = match[1].replace(/"/g, '');
+      }
+
     }
+
     window.downloadFilename = filename;
-    
-    document.querySelector('#download-view .font-bold.text-sm').innerText = filename;
-    document.querySelector('#download-view .text-xs.opacity-50').innerText = `${(downloadBlob.size / 1024 / 1024).toFixed(2)} MB · Just now`;
-    
+
+    document.querySelector(
+      '#download-view .font-bold.text-sm'
+    ).innerText = filename;
+
+    document.querySelector(
+      '#download-view .text-xs.opacity-50'
+    ).innerText =
+      `${(downloadBlob.size / 1024 / 1024).toFixed(2)} MB · Just now`;
+
     showView('download-view');
-    confetti({ particleCount: 200, spread: 80, origin: { y: 0.5 }, colors: ['#ff3b3b', '#ff8800', '#22c55e', '#ffffff'] });
+
+    confetti({
+      particleCount: 200,
+      spread: 80,
+      origin: { y: 0.5 },
+      colors: ['#ff3b3b', '#ff8800', '#22c55e', '#ffffff']
+    });
+
   } catch (err) {
+
     clearInterval(interval);
+
     alert('Error: ' + err.message);
+
     showView('tool-view');
   }
 }
 
 document.addEventListener('click', (e) => {
+
   if (e.target.closest('#download-view button.btn-primary')) {
+
     if (downloadBlob) {
+
       const url = URL.createObjectURL(downloadBlob);
+
       const a = document.createElement('a');
+
       a.href = url;
-      a.download = window.downloadFilename || 'processed.pdf';
+
+      a.download =
+        window.downloadFilename || 'processed.pdf';
+
       a.click();
+
       URL.revokeObjectURL(url);
     }
   }
 });
-  
-  
-
-window.onload = renderTools;
 </script>
 </body>
         </html>
