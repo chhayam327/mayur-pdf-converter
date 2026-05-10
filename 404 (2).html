@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I ❤️ PDF TOOLKIT - Ultra Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+* { -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --primary: #ff3b3b;
+  --primary-glow: rgba(255, 59, 59, 0.5);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.5s, color 0.5s;
+}
+
+body.dark-mode {
+  background: #0a0000;
+  color: white;
+}
+
+body.light-mode {
+  background: #f5f5f7;
+  color: #1a1a1a;
+}
+
+.animated-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  background: 
+    radial-gradient(circle at 20% 20%, #5a0606 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, #3a0202 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, #2a0101 0%, transparent 50%),
+    linear-gradient(135deg, #1a0101 0%, #0a0000 100%);
+  animation: meshMove 20s ease infinite;
+}
+
+@keyframes meshMove {
+  0%, 100% { background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%; }
+  50% { background-position: 100% 100%, 0% 100%, 50% 0%, 100% 100%; }
+}
+
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  z-index: -1;
+  animation: floatOrb 15s ease-in-out infinite;
+}
+.orb-1 { width: 300px; height: 300px; background: #ff3b3b; top: 10%; left: -100px; }
+.orb-2 { width: 250px; height: 250px; background: #ff6b00; bottom: 20%; right: -80px; animation-delay: -5s; }
+.orb-3 { width: 200px; height: 200px; background: #8b0000; top: 50%; left: 50%; animation-delay: -10s; }
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -30px) scale(1.1); }
+  66% { transform: translate(-30px, 50px) scale(0.9); }
+}
+
+.light-mode .animated-bg, .light-mode .orb { display: none; }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+}
+.glass-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 59, 59, 0.3);
+  box-shadow: 0 20px 50px rgba(255, 59, 59, 0.15);
+}
+
+.light-mode .glass-card {
+  background: white;
+  border: 1px solid #e5e5e7;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+.light-mode .glass-card:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.icon-3d-wrap {
+  position: relative;
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transform-style: preserve-3d;
+  animation: float3d 4s ease-in-out infinite;
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    inset 0 -2px 5px rgba(0,0,0,0.2);
+}
+
+.icon-3d-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent 50%);
+  pointer-events: none;
+}
+
+.icon-3d-wrap i {
+  font-size: 26px;
+  color: white;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+  z-index: 2;
+}
+
+@keyframes float3d {
+  0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(0deg); }
+  25% { transform: translateY(-6px) rotateY(8deg) rotateX(-3deg); }
+  50% { transform: translateY(-3px) rotateY(0deg) rotateX(0deg); }
+  75% { transform: translateY(-6px) rotateY(-8deg) rotateX(3deg); }
+}
+
+.tool-card:hover .icon-3d-wrap {
+  animation-play-state: paused;
+  transform: scale(1.15) rotateY(15deg);
+}
+
+#sidebar {
+  position: fixed;
+  top: 0; left: -100%;
+  width: 290px; height: 100%;
+  background: linear-gradient(180deg, #1a0101 0%, #0a0000 100%);
+  z-index: 2000;
+  transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex; flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.light-mode #sidebar {
+  background: white;
+  color: #1a1a1a;
+}
+#sidebar.active { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(5px);
+  z-index: 1500;
+  display: none;
+}
+
+.sidebar-item {
+  display: flex; align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+.sidebar-item:hover {
+  background: rgba(255, 59, 59, 0.1);
+  transform: translateX(4px);
+}
+.sidebar-item i { width: 22px; text-align: center; }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 78px;
+  background: rgba(15, 0, 0, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.light-mode .bottom-nav {
+  background: rgba(255,255,255,0.95);
+  border-top: 1px solid #e5e5e7;
+}
+
+.nav-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 14px;
+  transition: 0.3s;
+  opacity: 0.4;
+}
+.nav-item.active {
+  opacity: 1;
+  color: var(--primary);
+}
+.nav-item.active i { transform: scale(1.15); }
+.nav-item i { transition: 0.3s; font-size: 20px; }
+.nav-item span { font-size: 10px; font-weight: 700; }
+
+.ad-banner {
+  width: 100%;
+  height: 70px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+}
+.ad-banner::before {
+  content: 'AD';
+  position: absolute;
+  top: 4px; left: 8px;
+  font-size: 8px;
+  color: rgba(255,255,255,0.2);
+}
+.light-mode .ad-banner {
+  background: #fafafa;
+  border-color: #e5e5e7;
+  color: #999;
+}
+
+.tool-item {
+  margin-bottom: 10mm;
+}
+
+.switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer;
+  inset: 0;
+  background: #444;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 22px; width: 22px;
+  left: 3px; bottom: 3px;
+  background: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+input:checked + .slider { background: var(--primary); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+.cat-pill {
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.cat-pill.active {
+  background: white;
+  color: black;
+  border-color: white;
+}
+.light-mode .cat-pill { background: white; border-color: #e5e5e7; color: #555; }
+.light-mode .cat-pill.active { background: #1a1a1a; color: white; }
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff3b3b, #cc0000);
+  box-shadow: 0 8px 25px rgba(255, 59, 59, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: 0.3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255, 59, 59, 0.5); }
+.btn-primary:active { transform: translateY(0); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.hidden { display: none !important; }
+
+header {
+  background: rgba(10, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.light-mode header { background: rgba(255,255,255,0.85); border-bottom: 1px solid #e5e5e7; }
+
+.premium-glow {
+  position: relative;
+  overflow: hidden;
+}
+.premium-glow::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%);
+  animation: shine 3s infinite;
+}
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%); }
+  100% { transform: translateX(100%) translateY(100%); }
+}
+
+.ring-bg { stroke: rgba(255,255,255,0.05); }
+.light-mode .ring-bg { stroke: rgba(0,0,0,0.05); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeUp 0.5s ease forwards; }
+
+.recent-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 12px;
+  transition: 0.3s;
+}
+.recent-item:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
+.light-mode .recent-item { background: white; border-color: #e5e5e7; }
+</style>
+</head>
+<body class="dark-mode">
+
+<div class="animated-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div id="sidebar" class="p-6">
+  <div class="flex justify-between items-center mb-8">
+    <span class="font-black text-lg">I <span class="text-red-500">❤️</span> PDF</span>
+    <i class="fa-solid fa-xmark text-2xl cursor-pointer opacity-60" onclick="toggleSidebar()"></i>
+  </div>
+  <div class="flex-1 space-y-2 overflow-y-auto">
+    <div class="sidebar-item" onclick="showView('home-view')"><i class="fa-solid fa-house text-red-500"></i> Home</div>
+    <div class="sidebar-item" onclick="showView('recent-view')"><i class="fa-solid fa-clock text-blue-400"></i> Recent Files</div>
+    <div class="sidebar-item" onclick="showView('settings-view')"><i class="fa-solid fa-gear text-gray-400"></i> Settings</div>
+    <div class="sidebar-item" onclick="showView('premium-view')">
+      <i class="fa-solid fa-crown text-yellow-500"></i> Premium
+      <span class="ml-auto bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-md">PRO</span>
+    </div>
+    <div class="sidebar-item" onclick="showView('about-view')"><i class="fa-solid fa-circle-info text-green-400"></i> About</div>
+    <div class="sidebar-item"><i class="fa-solid fa-share-nodes text-purple-400"></i> Share App</div>
+    <div class="sidebar-item"><i class="fa-solid fa-star text-orange-400"></i> Rate Us</div>
+  </div>
+  <div class="ad-banner mt-4" style="height: 100px;">SQUARE AD 250x250</div>
+</div>
+
+<header class="flex justify-between items-center px-5 py-4 sticky top-0 z-40">
+  <i class="fa-solid fa-bars text-xl cursor-pointer p-2" onclick="toggleSidebar()"></i>
+  <div class="font-black text-base uppercase tracking-tight">I <span class="text-red-500">❤️</span> PDF TOOLKIT</div>
+  <div class="w-10 h-10 border border-white/10 rounded-2xl flex items-center justify-center bg-white/5 cursor-pointer">
+    <i class="fa-solid fa-right-to-bracket text-sm"></i>
+  </div>
+  </header>
+  <div id="main-container" class="px-5 pb-32">
+
+  <div id="home-view" class="fade-in">
+    <div class="mt-6">
+      <h1 class="text-3xl font-black leading-tight">Professional PDF Tools,<br><span class="text-red-500">Simplified.</span></h1>
+      <p class="opacity-50 text-sm mt-3">20+ tools to work with PDFs — 100% free, fast & secure.</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mt-6">
+      <div class="glass-card p-3 text-center">
+        <p class="text-xl font-black text-red-500">20+</p>
+        <p class="text-[10px] opacity-50 uppercase">Tools</p>
+      </div>
+      <div class="glass-card p-3 text-center">
+        <p class="text-xl font-black text-green-500">100%</p>
+        <p class="text-[10px] opacity-50 uppercase">Free</p>
+      </div>
+      <div class="glass-card p-3 text-center">
+        <p class="text-xl font-black text-blue-400">Fast</p>
+        <p class="text-[10px] opacity-50 uppercase">Secure</p>
+      </div>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto mt-6 no-scrollbar pb-2" id="category-list">
+      <button class="cat-pill active" onclick="filterCat('All', this)">All</button>
+      <button class="cat-pill" onclick="filterCat('Organize', this)">Organize</button>
+      <button class="cat-pill" onclick="filterCat('Convert', this)">Convert</button>
+      <button class="cat-pill" onclick="filterCat('Edit', this)">Edit</button>
+      <button class="cat-pill" onclick="filterCat('Security', this)">Security</button>
+      <button class="cat-pill" onclick="filterCat('Optimize', this)">Optimize</button>
+    </div>
+
+    <div class="ad-banner mt-4">Banner Ad — 320x70</div>
+
+    <div id="tools-list" class="mt-4"></div>
+  </div>
+
+  <div id="tool-view" class="hidden py-6">
+    <button onclick="showView('home-view')" class="opacity-60 mb-6 flex items-center gap-2 text-sm">
+      <i class="fa-solid fa-arrow-left"></i> All Tools
+    </button>
+    <div class="text-center">
+      <div id="active-tool-icon" class="icon-3d-wrap mx-auto mb-4" style="width:80px;height:80px;background:linear-gradient(135deg,#ff3b3b,#cc0000)">
+        <i class="fa-solid fa-layer-group" style="font-size:32px"></i>
+      </div>
+      <h2 id="active-tool-title" class="text-2xl font-black">Merge PDF</h2>
+      <p id="active-tool-desc" class="opacity-50 text-sm mt-2 mb-8">Combine PDFs in any order.</p>
+
+      <div class="glass-card p-10 border-dashed border-2 relative" style="border-color: rgba(255, 59, 59, 0.3)">
+        <div class="icon-3d-wrap mx-auto mb-4" style="width:70px;height:70px;background:linear-gradient(135deg,#ff3b3b,#cc0000)">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px"></i>
+        </div>
+        <p class="text-lg font-bold">Drag & drop files here</p>
+        <p class="text-xs opacity-50 mt-1">or click to browse</p>
+        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" onchange="startProcess()">
+      </div>
+
+      <div class="ad-banner mt-6">Sponsored — 320x70</div>
+
+      <button class="w-full btn-primary py-5 rounded-3xl mt-6 font-black text-lg text-white">SELECT FILES</button>
+      
+      <div class="ad-banner mt-6">Sponsored — 320x70</div>
+    </div>
+  </div>
+
+  <div id="process-view" class="hidden text-center py-20">
+    <div class="relative inline-block">
+      <svg width="160" height="160" class="-rotate-90">
+        <circle class="ring-bg" cx="80" cy="80" r="70" stroke-width="10" fill="transparent"/>
+        <circle id="p-circle" cx="80" cy="80" r="70" stroke="url(#grad)" stroke-width="10" fill="transparent" stroke-dasharray="439.8" stroke-dashoffset="439.8" stroke-linecap="round" style="transition: 1s linear;"/>
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff3b3b"/>
+            <stop offset="100%" stop-color="#ff8800"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div id="timer" class="absolute inset-0 flex items-center justify-center text-3xl font-black">10s</div>
+    </div>
+    <h2 class="text-2xl font-bold mt-8">Processing File...</h2>
+    <p class="opacity-50 text-sm mt-2">Please wait, magic in progress ✨</p>
+    <div class="ad-banner mt-10" style="height: 250px;">300 x 250 AD SLOT</div>
+  </div>
+
+  <div id="download-view" class="hidden text-center py-10">
+    <div class="icon-3d-wrap mx-auto mb-6" style="width:100px;height:100px;background:linear-gradient(135deg,#22c55e,#16a34a)">
+      <i class="fa-solid fa-check" style="font-size:42px"></i>
+    </div>
+    <h2 class="text-3xl font-black">Your file is ready! 🎉</h2>
+    <p class="opacity-50 mt-3">Processed successfully in seconds.</p>
+
+    <div class="glass-card p-5 mt-8 flex items-center gap-4">
+      <div class="icon-3d-wrap" style="width:50px;height:50px;background:linear-gradient(135deg,#ef4444,#b91c1c)">
+        <i class="fa-solid fa-file-pdf" style="font-size:20px"></i>
+      </div>
+      <div class="flex-1 text-left">
+        <p class="font-bold text-sm">document_processed.pdf</p>
+        <p class="text-xs opacity-50">2.4 MB · Just now</p>
+      </div>
+    </div>
+
+    <button class="w-full btn-primary py-5 rounded-3xl mt-6 font-black text-lg text-white">
+      <i class="fa-solid fa-download mr-2"></i> DOWNLOAD NOW
+    </button>
+    <div class="ad-banner mt-4">Sponsored — 320x70</div>
+    <button onclick="showView('home-view')" class="mt-4 opacity-60 underline text-sm">Back to home</button>
+  </div>
+
+  <div id="recent-view" class="hidden fade-in">
+    <h2 class="text-3xl font-black mt-6 mb-2"><i class="fa-solid fa-clock text-blue-400"></i> Recent</h2>
+    <p class="opacity-50 text-sm mb-6">Your processed files history</p>
+    <div class="ad-banner mb-4">Banner Ad — 320x70</div>
+    <div id="recent-list">
+      <div class="text-center opacity-40 py-20">
+        <i class="fa-solid fa-folder-open text-5xl mb-4"></i>
+        <p class="font-bold">No recent files yet</p>
+        <p class="text-xs mt-2">Your processed files will appear here</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-view" class="hidden fade-in">
+    <h2 class="text-3xl font-black mt-6 mb-2"><i class="fa-solid fa-gear text-red-500"></i> Settings</h2>
+    <p class="opacity-50 text-sm mb-6">Customize your experience</p>
+
+    <div class="glass-card p-5 space-y-5">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <div class="icon-3d-wrap" style="width:42px;height:42px;background:linear-gradient(135deg,#6366f1,#4338ca)">
+            <i class="fa-solid fa-moon" style="font-size:16px"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Dark Mode</p>
+            <p class="text-[11px] opacity-50">Toggle theme</p>
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="mode-toggle" checked onchange="toggleMode()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <hr class="opacity-10">
+
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-4">
+          <div class="icon-3d-wrap" style="width:42px;height:42px;background:linear-gradient(135deg,#22c55e,#16a34a)">
+            <i class="fa-solid fa-bell" style="font-size:16px"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Notifications</p>
+            <p class="text-[11px] opacity-50">Push alerts</p>
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <hr class="opacity-10">
+
+      <div class="flex justify-between items-center cursor-pointer">
+        <div class="flex items-center gap-4">
+          <div class="icon-3d-wrap" style="width:42px;height:42px;background:linear-gradient(135deg,#f59e0b,#d97706)">
+            <i class="fa-solid fa-language" style="font-size:16px"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Language</p>
+            <p class="text-[11px] opacity-50">English</p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right opacity-40"></i>
+      </div>
+    </div>
+
+    <div class="ad-banner mt-6">Banner Ad — 320x70</div>
+
+    <div class="glass-card p-5 mt-6 space-y-5">
+      <div class="flex justify-between items-center cursor-pointer">
+        <div class="flex items-center gap-4">
+          <div class="icon-3d-wrap" style="width:42px;height:42px;background:linear-gradient(135deg,#06b6d4,#0891b2)">
+            <i class="fa-solid fa-shield-halved" style="font-size:16px"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Privacy Policy</p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right opacity-40"></i>
+      </div>
+
+      <hr class="opacity-10">
+
+      <div class="flex justify-between items-center cursor-pointer">
+        <div class="flex items-center gap-4">
+          <div class="icon-3d-wrap" style="width:42px;height:42px;background:linear-gradient(135deg,#ec4899,#be185d)">
+            <i class="fa-solid fa-headset" style="font-size:16px"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm">Support</p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right opacity-40"></i>
+      </div>
+    </div>
+
+    <p class="text-center opacity-30 text-xs mt-8">Version 2.0.0 Pro</p>
+  </div>
+
+  <div id="premium-view" class="hidden fade-in">
+    <div class="text-center mt-6 mb-8">
+      <div class="icon-3d-wrap mx-auto mb-4" style="width:80px;height:80px;background:linear-gradient(135deg,#fbbf24,#d97706)">
+        <i class="fa-solid fa-crown" style="font-size:32px"></i>
+      </div>
+      <h2 class="text-3xl font-black">Go Premium</h2>
+      <p class="opacity-50 mt-2 text-sm">Unlock unlimited power</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="glass-card premium-glow p-6 border-2" style="border-color: rgba(255,59,59,0.5)">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-red-500 font-black text-xs tracking-widest">MONTHLY</p>
+            <h3 class="text-4xl font-black mt-2">₹199<span class="text-sm font-normal opacity-50">/mo</span></h3>
+          </div>
+          <span class="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full">POPULAR</span>
+        </div>
+        <ul class="mt-5 space-y-3 text-sm">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Unlimited file conversions</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Max file size: 2GB</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> No advertisements</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> Priority processing</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-check text-green-500"></i> 24/7 Support</li>
+        </ul>
+        <button class="w-full btn-primary py-4 rounded-2xl mt-6 font-black text-white">Subscribe Now</button>
+      </div>
+
+      <div class="glass-card p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="opacity-50 font-black text-xs tracking-widest">YEARLY</p>
+            <h3 class="text-4xl font-black mt-2">₹1499<span class="text-sm font-normal opacity-50">/yr</span></h3>
+            <p class="text-xs text-green-500 font-bold mt-1">SAVE 40%</p>
+          </div>
+        </div>
+        <button class="w-full bg-white/10 hover:bg-white/15 py-4 rounded-2xl mt-6 font-bold transition">Choose Plan</button>
+      </div>
+
+      <div class="glass-card p-6">
+        <p class="opacity-50 font-black text-xs tracking-widest">LIFETIME</p>
+        <h3 class="text-4xl font-black mt-2">₹4999<span class="text-sm font-normal opacity-50"> once</span></h3>
+        <p class="text-xs text-yellow-500 font-bold mt-1">⭐ Best Value</p>
+        <button class="w-full bg-white/10 hover:bg-white/15 py-4 rounded-2xl mt-6 font-bold transition">Buy Lifetime</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="about-view" class="hidden fade-in">
+    <h2 class="text-3xl font-black mt-6 mb-2"><i class="fa-solid fa-circle-info text-green-400"></i> About</h2>
+    <p class="opacity-50 text-sm mb-6">Know more about us</p>
+    <div class="glass-card p-6">
+      <p class="font-bold text-lg mb-2">I ❤️ PDF TOOLKIT</p>
+      <p class="text-sm opacity-70 leading-relaxed">A complete PDF solution with 20+ powerful tools. Built for speed, security, and simplicity. Process your PDFs without uploading to any server.</p>
+    </div>
+    <div class="ad-banner mt-6">Banner Ad — 320x70</div>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <div onclick="showView('home-view')" class="nav-item active" data-nav="home-view">
+    <i class="fa-solid fa-house"></i><span>Home</span>
+  </div>
+  <div onclick="showView('recent-view')" class="nav-item" data-nav="recent-view">
+    <i class="fa-solid fa-clock"></i><span>Recent</span>
+  </div>
+  <div onclick="showView('settings-view')" class="nav-item" data-nav="settings-view">
+    <i class="fa-solid fa-gear"></i><span>Settings</span>
+  </div>
+  <div onclick="showView('premium-view')" class="nav-item" data-nav="premium-view">
+    <i class="fa-solid fa-crown"></i><span>Premium</span>
+  </div>
+</nav>
+
+<script>
+const toolsData = [
+  { n: "Merge PDF", d: "Combine multiple PDFs into one.", i: "fa-layer-group", c1: "#f97316", c2: "#c2410c", cat: "Organize" },
+  { n: "Split PDF", d: "Separate pages into new files.", i: "fa-scissors", c1: "#ef4444", c2: "#b91c1c", cat: "Organize" },
+  { n: "Compress PDF", d: "Reduce file size without quality loss.", i: "fa-compress", c1: "#22c55e", c2: "#15803d", cat: "Optimize" },
+  { n: "PDF to Word", d: "Convert PDF to editable Word.", i: "fa-file-word", c1: "#3b82f6", c2: "#1d4ed8", cat: "Convert" },
+  { n: "Word to PDF", d: "Convert Word docs to PDF.", i: "fa-file-lines", c1: "#0ea5e9", c2: "#0369a1", cat: "Convert" },
+  { n: "PDF to JPG", d: "Extract images from PDF pages.", i: "fa-image", c1: "#facc15", c2: "#a16207", cat: "Convert" },
+  { n: "JPG to PDF", d: "Combine images into PDF.", i: "fa-images", c1: "#eab308", c2: "#854d0e", cat: "Convert" },
+  { n: "PDF to Excel", d: "Extract tables to spreadsheet.", i: "fa-file-excel", c1: "#10b981", c2: "#047857", cat: "Convert" },
+  { n: "PDF to PPT", d: "Convert PDF to PowerPoint.", i: "fa-file-powerpoint", c1: "#f97316", c2: "#9a3412", cat: "Convert" },
+  { n: "Sign PDF", d: "Draw or type signatures easily.", i: "fa-signature", c1: "#6366f1", c2: "#4338ca", cat: "Edit" },
+  { n: "Edit PDF", d: "Add text, shapes, images.", i: "fa-pen-to-square", c1: "#a855f7", c2: "#7e22ce", cat: "Edit" },
+  { n: "Watermark PDF", d: "Add text or image watermarks.", i: "fa-droplet", c1: "#0ea5e9", c2: "#0369a1", cat: "Edit" },
+  { n: "Rotate PDF", d: "Rotate pages as needed.", i: "fa-rotate", c1: "#ec4899", c2: "#be185d", cat: "Organize" },
+  { n: "Page Numbers", d: "Add numbers to all pages.", i: "fa-list-ol", c1: "#84cc16", c2: "#4d7c0f", cat: "Edit" },
+  { n: "Protect PDF", d: "Lock with strong password.", i: "fa-lock", c1: "#14b8a6", c2: "#0f766e", cat: "Security" },
+  { n: "Unlock PDF", d: "Remove password protection.", i: "fa-lock-open", c1: "#06b6d4", c2: "#0e7490", cat: "Security" },
+  { n: "OCR PDF", d: "Make scanned PDFs searchable.", i: "fa-magnifying-glass", c1: "#06b6d4", c2: "#0e7490", cat: "Optimize" },
+  { n: "Repair PDF", d: "Fix corrupted documents.", i: "fa-wrench", c1: "#f59e0b", c2: "#b45309", cat: "Optimize" },
+  { n: "Scan to PDF", d: "Use camera to create PDF.", i: "fa-camera", c1: "#0284c7", c2: "#075985", cat: "Convert" },
+  { n: "HTML to PDF", d: "Save webpages as PDF.", i: "fa-code", c1: "#dc2626", c2: "#991b1b", cat: "Convert" },
+  { n: "Crop PDF", d: "Trim margins from pages.", i: "fa-crop-simple", c1: "#7c3aed", c2: "#5b21b6", cat: "Edit" },
+  { n: "Organize PDF", d: "Rearrange & delete pages.", i: "fa-arrows-up-down-left-right", c1: "#d946ef", c2: "#a21caf", cat: "Organize" }
+];
+
+let currentFilter = 'All';
+
+function renderTools() {
+  const list = document.getElementById('tools-list');
+  list.innerHTML = '';
+  const filtered = currentFilter === 'All' ? toolsData : toolsData.filter(t => t.cat === currentFilter);
+  filtered.forEach((t) => {
+    const card = document.createElement('div');
+    card.className = "tool-item";
+    card.innerHTML = `
+      <div class="glass-card tool-card p-4 flex items-center gap-4 cursor-pointer">
+        <div class="icon-3d-wrap" style="background: linear-gradient(135deg, ${t.c1}, ${t.c2})">
+          <i class="fa-solid ${t.i}"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-sm">${t.n}</h3>
+          <p class="opacity-50 text-xs mt-0.5 truncate">${t.d}</p>
+          <span class="inline-block text-[9px] mt-1 px-2 py-0.5 rounded-full bg-white/10 opacity-70">${t.cat}</span>
+        </div>
+        <i class="fa-solid fa-chevron-right opacity-30 text-xs"></i>
+      </div>
+      <div class="ad-banner">Sponsored — 320x70</div>
+    `;
+    card.querySelector('.tool-card').onclick = () => openTool(t);
+    list.appendChild(card);
+  });
+}
+
+function openTool(t) {
+  document.getElementById('active-tool-title').innerText = t.n;
+  document.getElementById('active-tool-desc').innerText = t.d;
+  const iconWrap = document.getElementById('active-tool-icon');
+  iconWrap.style.background = `linear-gradient(135deg, ${t.c1}, ${t.c2})`;
+  iconWrap.querySelector('i').className = `fa-solid ${t.i}`;
+  showView('tool-view');
+}
+
+function filterCat(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTools();
+}
+
+function showView(id) {
+  ['home-view', 'tool-view', 'process-view', 'download-view', 'settings-view', 'premium-view', 'recent-view', 'about-view']
+    .forEach(v => document.getElementById(v).classList.add('hidden'));
+  const view = document.getElementById(id);
+  view.classList.remove('hidden');
+  view.classList.add('fade-in');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navItem = document.querySelector(`[data-nav="${id}"]`);
+  if (navItem) navItem.classList.add('active');
+  document.getElementById('sidebar').classList.remove('active');
+  document.getElementById('overlay').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('active');
+  document.getElementById('overlay').style.display = sb.classList.contains('active') ? 'block' : 'none';
+}
+
+function toggleMode() {
+  document.body.className = document.getElementById('mode-toggle').checked ? 'dark-mode' : 'light-mode';
+// 🔥 BACKEND CONNECTION - Aapka Live Link
+const BACKEND_URL = 'https://pdf-toolkit-backend-kw6t.onrender.com';
+
+const toolEndpoints = {
+  "Merge PDF": "/api/pdf/merge", "Split PDF": "/api/pdf/split",
+  "Compress PDF": "/api/pdf/compress", "PDF to Word": "/api/pdf/pdf-to-word",
+  "Word to PDF": "/api/pdf/word-to-pdf", "PDF to JPG": "/api/pdf/pdf-to-jpg",
+  "JPG to PDF": "/api/pdf/jpg-to-pdf", "PDF to Excel": "/api/pdf/pdf-to-excel",
+  "PDF to PPT": "/api/pdf/pdf-to-ppt", "Sign PDF": "/api/pdf/sign",
+  "Edit PDF": "/api/pdf/edit", "Watermark PDF": "/api/pdf/watermark",
+  "Rotate PDF": "/api/pdf/rotate", "Page Numbers": "/api/pdf/page-numbers",
+  "Protect PDF": "/api/pdf/protect", "Unlock PDF": "/api/pdf/unlock",
+  "OCR PDF": "/api/pdf/ocr", "Repair PDF": "/api/pdf/repair",
+  "Scan to PDF": "/api/pdf/scan-to-pdf", "HTML to PDF": "/api/pdf/html-to-pdf",
+  "Crop PDF": "/api/pdf/crop", "Organize PDF": "/api/pdf/organize"
+};
+
+let currentTool = null;
+let downloadBlob = null;
+
+const originalOpenTool = openTool;
+openTool = function(t) {
+  currentTool = t;
+  originalOpenTool(t);
+};
+
+async function startProcess(event) {
+  const fileInput = event?.target;
+  const files = fileInput?.files;
+  if (!files || files.length === 0) return;
+  
+  showView('process-view');
+  let time = 30; 
+  const ring = document.getElementById('p-circle');
+  const txt = document.getElementById('timer');
+  txt.innerText = 'Uploading...';
+  
+  const interval = setInterval(() => {
+    time--;
+    if (time > 0) txt.innerText = time + 's';
+    ring.style.strokeDashoffset = 439.8 - (439.8 * (30 - time) / 30);
+  }, 1000);
+  
+  try {
+    const endpoint = toolEndpoints[currentTool?.n] || '/api/pdf/merge';
+    const formData = new FormData();
+    const multiFile = ['Merge PDF', 'JPG to PDF', 'Scan to PDF'];
+    if (multiFile.includes(currentTool?.n)) {
+      for (let f of files) formData.append('files', f);
+    } else {
+      formData.append('file', files[0]);
+    }
+    
+    const response = await fetch(BACKEND_URL + endpoint, { method: 'POST', body: formData });
+    clearInterval(interval);
+    if (!response.ok) throw new Error('Processing Failed');
+    
+    downloadBlob = await response.blob();
+    const disposition = response.headers.get('Content-Disposition');
+    let filename = 'processed.pdf';
+    if (disposition) {
+      const match = disposition.match(/filename=(.+)/);
+      if (match) filename = match[1].replace(/"/g, '');
+    }
+    window.downloadFilename = filename;
+    
+    document.querySelector('#download-view .font-bold.text-sm').innerText = filename;
+    document.querySelector('#download-view .text-xs.opacity-50').innerText = `${(downloadBlob.size / 1024 / 1024).toFixed(2)} MB · Just now`;
+    
+    showView('download-view');
+    confetti({ particleCount: 200, spread: 80, origin: { y: 0.5 }, colors: ['#ff3b3b', '#ff8800', '#22c55e', '#ffffff'] });
+  } catch (err) {
+    clearInterval(interval);
+    alert('Error: ' + err.message);
+    showView('tool-view');
+  }
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#download-view button.btn-primary')) {
+    if (downloadBlob) {
+      const url = URL.createObjectURL(downloadBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = window.downloadFilename || 'processed.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+});
+  
+  
+
+window.onload = renderTools;
+</script>
+</body>
+        </html>
