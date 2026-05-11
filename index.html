@@ -948,6 +948,34 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+  document.addEventListener('DOMContentLoaded', () => {
+  renderTools();
+});
+
+function openLogin() {
+  document.getElementById('login-modal').classList.remove('hidden');
+}
+
+function closeLogin() {
+  document.getElementById('login-modal').classList.add('hidden');
+}
+
+const loginModalHTML = `
+<div id="login-modal" class="hidden fixed inset-0 z-[5000] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeLogin()"></div>
+  <div class="glass-card w-full max-w-md p-8 relative z-10 fade-in bg-[#1a0000] border border-white/10 rounded-3xl" style="background: #1a0000; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;">
+    <h2 class="text-2xl font-black mb-2 text-white">Welcome Back</h2>
+    <p class="opacity-50 text-sm mb-6 text-white/70">Login to access premium features</p>
+    <div class="space-y-4">
+      <input type="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white focus:border-red-500 outline-none transition" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 16px; width: 100%;">
+      <input type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-white focus:border-red-500 outline-none transition" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 16px; border-radius: 16px; width: 100%;">
+      <button onclick="alert('Login Logic Coming Soon!')" class="w-full bg-[#ff3b3b] py-4 rounded-2xl font-black text-white mt-2 hover:scale-[1.02] transition" style="background: #ff3b3b; color: white; font-weight: 900; padding: 16px; border-radius: 16px; width: 100%; border: none;">LOGIN</button>
+    </div>
+    <p class="text-center text-xs mt-6 opacity-40 text-white/50">Don't have an account? <span class="text-red-500 cursor-pointer font-bold">Sign Up</span></p>
+  </div>
+</div>`;
+
+document.body.insertAdjacentHTML('beforeend', loginModalHTML);
 </script>
 </body>
         </html>
